@@ -1,4 +1,3 @@
-import React, {useState} from 'react';
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, TouchableHighlight, Button, Alert } from 'react-native';
 import Constants from 'expo-constants';
