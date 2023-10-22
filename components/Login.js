@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-/*import { StatusBar } from 'expo-status-bar';*/
 import { AppRegistry, StyleSheet, Text, TextInput, Touchable, TouchableHighlight, View } from 'react-native';
 import Constants from 'expo-constants';
 import Signup from './Signup';
