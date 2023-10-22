@@ -17,62 +17,55 @@ export default class App extends Component {
                 <View style={styles.topBox}>
                     <View style={styles.buttonContainer}>
                         <TouchableHighlight style ={styles.addButton}
-                    onPress={() => {
-                        alert('Card Added')
-                    }}
-                >
+                            onPress={() => {
+                            alert('Card Added')
+                        }}>
                         <Text style={styles.buttonText}>
                             Add Cards
                         </Text>
-               
                         </TouchableHighlight>
+
                         <TouchableHighlight style={styles.rewardsButton}
                             onPress={() => {
                                 alert('Your total Rewards is: ')
-                            }}
-                        >
-                        
+                            }}>
                             <Text style={styles.buttonText}>
                                 Rewards
                             </Text>
                         </TouchableHighlight>
+
                         <TouchableHighlight style={styles.creditButton}
                             onPress={() => {
                                 alert('Available Credit is: ')
-                            }}
-                        >
+                            }}>
                             <Text style={styles.buttonText}>
                                 Available Credit
                             </Text>
-                        
                         </TouchableHighlight>
+
                     </View>
                 </View>
                 
                 <View style={styles.bottomBox}>
                     
-                    <View style={styles.buttonContainer2}>
+                    
                         <TouchableHighlight style ={styles.walletButton}
-                    onPress={() => {
-                        alert('You clicked on wallet')
-                    }}
-                >
+                            onPress={() => {
+                            alert('You clicked on wallet')
+                        }}>
                         <Text style={styles.buttonText}>
                             Wallet
                         </Text>
-               
                         </TouchableHighlight>
+
                         <TouchableHighlight style ={styles.profileButton}
-                    onPress={() => {
-                        alert('You clicked on profile')
-                    }}
-                >
+                            onPress={() => {
+                            alert('You clicked on profile')
+                        }}>
                         <Text style={styles.buttonText}>
                             Profile
                         </Text>
-               
                         </TouchableHighlight>
-                    </View>
                 </View>
             </View>
         );
@@ -84,17 +77,16 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'green',
+        flexDirection: 'column',
     },
     topBox: {
         width: 300,
-        height: 200,
-        flex: 2,
-        backgroundColor: 'green',
-        borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 10,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
+        height: 100,
+        borderColor: 'white',
+        borderWidth: 3,
+        marginBottom: 10,
+        paddingTop: 30,  
     },
     buttonContainer: {
         //flexDirection: 'row',
@@ -149,14 +141,9 @@ const styles = StyleSheet.create({
     },
     bottomBox: {
         width: 300,
-        height: 200,
-        flex: 1,
-        backgroundColor: 'green',
-        borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 10,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
+        height: 400,
+        borderColor: 'white',
+        borderWidth: 3,
     },
     buttonContainer2: {
         //flexDirection: 'row',
