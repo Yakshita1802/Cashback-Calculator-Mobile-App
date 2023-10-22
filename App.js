@@ -1,23 +1,49 @@
-import React, {useState} from 'react';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import WelcomeScreen from './components/WelcomeScreen';
+//import Cards from './components/Cards';
+import SignUp from './components/SignUp';
 import Login from './components/Login';
+import Wallet from './components/Wallet';
 
-export default function App() {
-
-  return(
+/*export default function App() {
+  return (
     <View style={styles.container}>
-      <Login/>
+      <WelcomeScreen/>
+      {/* <Text style={styles.titleText}>Cashback Calculator</Text> */
+     /* <StatusBar style="auto" />
     </View>
   );
-}
+}*/
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'green',
+    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    //justifyContent: 'center',
   },
-})
+  titleText: {
+    fontSize:25,
+    fontWeight:'bold',
+  }
+});
+
+const navigator = createStackNavigator(
+  {
+  Home : WelcomeScreen,
+  SignUp : SignUp,
+  Login : Login,
+  Wallet : Wallet
+  },
+  {
+      initialRouteName: 'Home',
+      defaultNavigationOptions:{
+          title : 'App'
+      }
+  }
+);
+export default createAppContainer(navigator);

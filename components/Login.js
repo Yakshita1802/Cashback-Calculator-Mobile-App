@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TextInput, Touchable, TouchableHighlight, View } from 'react-native';
-import Signup from './Signup';
+import SignUp from './SignUp';
 
-export default function Login() {
+export default function Login({navigation}) {
     
   const [username, setName] = useState('John Doe'); /*declaring const object with useState function*/
   const [password, setPassword] = useState('John Doe'); /*declaring const object with useState function*/
@@ -33,7 +33,7 @@ export default function Login() {
 
         <TouchableHighlight style={styles.loginFunction}
 
-          onPress={() => {
+          onPress={() => {navigation.navigate('Wallet')
             alert('Logging in '+ username)
           }}>
             <Text style={styles.loginButton}>LOG IN</Text>
