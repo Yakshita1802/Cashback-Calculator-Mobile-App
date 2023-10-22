@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         borderWidth: 3,
         marginBottom: 10,
-        /*paddingTop: 30,*/
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',  
@@ -116,8 +115,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: 'white',
         borderRadius: 10,
-        marginTop: 30,
-        //marginLeft: 5,
+        marginTop: 10,
         marginRight:50,
     },
     creditButton: {
@@ -128,8 +126,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         marginBottom: 200,
-        marginLeft: 120,
-        //marginRight:50,
+        marginLeft: 50,
     },
     bottomBox: {
         width: 300,
