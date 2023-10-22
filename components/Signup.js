@@ -26,7 +26,7 @@ export default class App extends Component {
             <View style={styles.container}>
                 <View style={styles.topBox}>
                     <Text style={styles.title}>
-                        SignUp for Cashback Calculator
+                        Signup for Cashback Calculator
                     </Text>
                 </View>
                 
@@ -49,17 +49,15 @@ export default class App extends Component {
                         onChangeText={this._handleConfirmPasswordChange}
                         value={this.state.confirmPassword} // Bind the value to the state variable
                     />
-                </View>
-                <TouchableHighlight style={styles.signupFunction}
-                    onPress={() => {
-                        alert('You are successfully signed up')
-                    }}
-                >
-                
-                    <Text style={styles.signupButton}>
-                        SignUp
-                    </Text>
+                    <TouchableHighlight style={styles.signupFunction}
+                        onPress={() => {
+                            alert('You are successfully signed up')
+                        }}>
+                        <Text style={styles.signupButton}>
+                            SignUp
+                        </Text>
                 </TouchableHighlight>
+                </View>
             </View>
         );
     }
@@ -71,24 +69,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'green',
+        flexDirection: 'column',
     },
     topBox: {
-        flex: 1,
         width: 300,
-        height: 50,
+        height: 100,
         borderColor: 'white',
-        margin: 10,
+        borderWidth: 3,
+        marginBottom: 10,
+        paddingTop: 30,  
     },
     title: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
         color: 'white',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
     },
     bottomBox: {
-        flex: 2,
-        alignItems: 'center',
+        width: 300,
+        height: 400,
+        borderColor: 'white',
+        borderWidth: 3,
     },
     userCredentials: {
         width: 150,
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
         marginRight: 75,
         marginTop: 10,
     },
-    signupFunction: {
+    /*signupFunction: {
         marginTop: 20,
         marginBottom: 60,
         borderWidth: 1,
@@ -111,12 +112,13 @@ const styles = StyleSheet.create({
         marginLeft: 80,
         marginRight: 80,
         paddingVertical: 10,
-    },
+    },*/
     signupButton: {
-        fontSize: 20,
-        color: 'black',
+        color: 'white',
         textAlign: 'center',
         fontWeight: 'bold',
+        fontSize: 20,
+        marginTop: 30,
     }
 });
   
