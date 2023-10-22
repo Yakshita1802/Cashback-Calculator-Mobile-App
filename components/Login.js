@@ -1,67 +1,82 @@
-import React, {useState} from 'react';
+import React, { Component } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, Touchable, TouchableHighlight, View } from 'react-native';
+import { AppRegistry, StyleSheet, Text, TextInput, Touchable, TouchableHighlight, View } from 'react-native';
+import Constants from 'expo-constants';
 import Signup from './Signup';
 
-export default function Login() {
+export default class App extends Component{
+    state = {
+      username: 'John Doe',
+      password: 'John Doe',
+    }
+
+    verifyUsername = text => {
+      this.setState({ username: text});
+    };
+
+    verifyPassword = text => {
+      this.setState({ password: text});
+    };
     
-  const [username, setName] = useState('John Doe'); /*declaring const object with useState function*/
-  const [password, setPassword] = useState('John Doe'); /*declaring const object with useState function*/
-  const callComponent = () => {
-    alert('you clicked sign up')
-    console.log('you clicked sign up')
-  }
-  return (
+    callComponent = () => {
+      alert('you clicked sign up')
+      console.log('you clicked sign up')
+    };
 
-    <View style={styles.container}>
+  render(){
+    
+    return (
 
-      <View style={styles.firstBox}>
-        <Text style={styles.appTitle}>Welcome to Cashback App!</Text>
-      </View>
-
-      <View style={styles.secondBox}>
-
-        <Text style={styles.appInfo}>Enter credentials to log in</Text>
-
-          <TextInput style={styles.userCredentials}
-            placeholder='username' 
-            onChangeText={(username) => setName(username)}/>
-
-          <TextInput style={styles.userCredentials}
-            placeholder='password' 
-            onChangeText={(password) => setPassword(password)}/>
-
-        <TouchableHighlight style={styles.loginFunction}
-
-          onPress={() => {
-            alert('Logging in '+ username)
-          }}>
-            <Text style={styles.loginButton}>LOG IN</Text>
-
-        </TouchableHighlight>
-
-        <TouchableHighlight style={styles.forgotPassword}
-        
+      <View style={styles.container}>
+  
+        <View style={styles.firstBox}>
+          <Text style={styles.appTitle}>Welcome to Cashback App!</Text>
+        </View>
+  
+        <View style={styles.secondBox}>
+  
+          <Text style={styles.appInfo}>Enter credentials to log in</Text>
+  
+            <TextInput style={styles.userCredentials}
+              placeholder='username' 
+              onChangeText={this.verifyUsername}
+              value={this.state.username}/>
+  
+            <TextInput style={styles.userCredentials}
+              placeholder='password' 
+              onChangeText={this.verifyPassword}
+              value={this.state.password}/>
+  
+          <TouchableHighlight style={styles.loginFunction}
             onPress={() => {
-
-            alert('check your inbox')
+              alert('Welcome '+this.state.username)
             }}>
-
-            <Text style={styles.loginButton}>forgot password?</Text>
-
-        </TouchableHighlight>
-
-        <TouchableHighlight style={styles.signinFunction}
-        
-            onPress={callComponent}>
-            <Text style={styles.signinButton}>SIGN UP</Text>
-
-        </TouchableHighlight>
-
+              <Text style={styles.loginButton}>LOG IN</Text>
+          </TouchableHighlight>
+  
+          <TouchableHighlight style={styles.forgotPassword}
+          
+              onPress={() => {
+              {this.updateCredentials}
+              alert('check your inbox')
+              }}>
+  
+              <Text style={styles.loginButton}>forgot password?</Text>
+  
+          </TouchableHighlight>
+  
+          <TouchableHighlight style={styles.signinFunction}
+          
+              onPress={this.callComponent}>
+              <Text style={styles.signinButton}>SIGN UP</Text>
+  
+          </TouchableHighlight>
+  
+        </View>
+  
       </View>
-
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
