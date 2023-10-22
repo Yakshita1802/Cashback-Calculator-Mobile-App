@@ -15,6 +15,7 @@ export default class App extends Component {
             <View style={styles.container}>
                 
                 <View style={styles.topBox}>
+                    <View style={styles.row}>
                         <TouchableHighlight style ={styles.addButton}
                             onPress={() => {
                             alert('Card Added')
@@ -23,16 +24,16 @@ export default class App extends Component {
                             Add Cards
                         </Text>
                         </TouchableHighlight>
-
+                    </View>
+                    <View style={styles.row}>
                         <TouchableHighlight style={styles.rewardsButton}
                             onPress={() => {
                                 alert('Your total Rewards is: ')
                             }}>
                             <Text style={styles.buttonText}>
-                                Rewards
+                                Rewards Balance
                             </Text>
                         </TouchableHighlight>
-
                         <TouchableHighlight style={styles.creditButton}
                             onPress={() => {
                                 alert('Available Credit is: ')
@@ -41,9 +42,9 @@ export default class App extends Component {
                                 Available Credit
                             </Text>
                         </TouchableHighlight>
+                    </View>
                 </View>
                 <View style={styles.bottomBox}>
-                    
                     
                     <TouchableHighlight style ={styles.walletButton}
                         onPress={() => {
@@ -78,11 +79,20 @@ const styles = StyleSheet.create({
     },
     topBox: {
         width: 300,
-        height: 200,
+        height: 300,
         borderColor: 'white',
         borderWidth: 3,
         marginBottom: 10,
-        paddingTop: 30,  
+        /*paddingTop: 30,*/
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',  
+    },
+    row: {
+        width: 200,
+        height: 100,
+        borderColor: 'white',
+        borderWidth: 1,
     },
     addButton: {
         width: 100,
@@ -91,8 +101,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: 'white',
         borderRadius: 10,
-        //marginTop: 5,
-        //marginLeft: 5,
         marginRight:50,
     },
     buttonText: {
