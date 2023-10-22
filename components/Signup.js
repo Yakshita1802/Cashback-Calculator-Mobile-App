@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginLeft: 75,
         marginRight: 75,
-        marginTop: 10,
+        marginTop: 50,
     },
     /*signupFunction: {
         marginTop: 20,
