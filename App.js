@@ -3,12 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import Wallet from './components/Wallet';
 
 export default function App() {
 
   return(
     <View style={styles.container}>
-      <Login/>
+      <Wallet/>
     </View>
   );
 }
