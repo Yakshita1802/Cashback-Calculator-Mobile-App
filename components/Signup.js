@@ -56,7 +56,7 @@ export default class App extends Component {
                         <Text style={styles.signupButton}>
                             Sign up
                         </Text>
-                </TouchableHighlight>
+                    </TouchableHighlight>
                 </View>
             </View>
         );
