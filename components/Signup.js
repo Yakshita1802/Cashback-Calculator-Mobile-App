@@ -54,7 +54,7 @@ export default class App extends Component {
                             alert('You are successfully signed up')
                         }}>
                         <Text style={styles.signupButton}>
-                            SignUp
+                            Sign up
                         </Text>
                 </TouchableHighlight>
                 </View>
