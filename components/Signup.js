@@ -102,23 +102,12 @@ const styles = StyleSheet.create({
         marginRight: 75,
         marginTop: 50,
     },
-    /*signupFunction: {
-        marginTop: 20,
-        marginBottom: 60,
-        borderWidth: 1,
-        borderColor: 'black',
-        backgroundColor: 'white',
-        borderRadius: 10,
-        marginLeft: 80,
-        marginRight: 80,
-        paddingVertical: 10,
-    },*/
     signupButton: {
         color: 'white',
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 20,
         marginTop: 30,
-    }
+    },
 });
   
