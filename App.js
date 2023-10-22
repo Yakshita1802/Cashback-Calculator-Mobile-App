@@ -1,6 +1,4 @@
 import React, {useState} from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Login from './components/Login';
@@ -25,17 +23,3 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 })
-
-const navigator = createStackNavigator(
-  {
-  Login : Login,
-  SignUp : SignUp,
-  Wallet : Wallet,
-  },
-  {
-      initialRouteName: 'Login',
-      defaultNavigationOptions:{
-          title : 'App'
-      }
-  }
-);
