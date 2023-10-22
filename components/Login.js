@@ -6,8 +6,8 @@ import Signup from './Signup';
 
 export default class App extends Component{
     state = {
-      username: 'John Doe',
-      password: 'John Doe',
+      username: 'John',
+      password: 'Doe',
     }
 
     verifyUsername = text => {
@@ -24,7 +24,7 @@ export default class App extends Component{
     };
 
   render(){
-    
+
     return (
 
       <View style={styles.container}>
