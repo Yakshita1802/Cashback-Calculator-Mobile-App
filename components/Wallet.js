@@ -15,7 +15,6 @@ export default class App extends Component {
             <View style={styles.container}>
                 
                 <View style={styles.topBox}>
-                    <View style={styles.buttonContainer}>
                         <TouchableHighlight style ={styles.addButton}
                             onPress={() => {
                             alert('Card Added')
@@ -42,30 +41,27 @@ export default class App extends Component {
                                 Available Credit
                             </Text>
                         </TouchableHighlight>
-
-                    </View>
                 </View>
-                
                 <View style={styles.bottomBox}>
                     
                     
-                        <TouchableHighlight style ={styles.walletButton}
-                            onPress={() => {
-                            alert('You clicked on wallet')
-                        }}>
-                        <Text style={styles.buttonText}>
-                            Wallet
-                        </Text>
-                        </TouchableHighlight>
+                    <TouchableHighlight style ={styles.walletButton}
+                        onPress={() => {
+                        alert('You clicked on wallet')
+                    }}>
+                    <Text style={styles.buttonText}>
+                        Wallet
+                    </Text>
+                    </TouchableHighlight>
 
-                        <TouchableHighlight style ={styles.profileButton}
-                            onPress={() => {
-                            alert('You clicked on profile')
-                        }}>
-                        <Text style={styles.buttonText}>
-                            Profile
-                        </Text>
-                        </TouchableHighlight>
+                    <TouchableHighlight style ={styles.profileButton}
+                        onPress={() => {
+                        alert('You clicked on profile')
+                    }}>
+                    <Text style={styles.buttonText}>
+                        Profile
+                    </Text>
+                    </TouchableHighlight>
                 </View>
             </View>
         );
@@ -82,23 +78,11 @@ const styles = StyleSheet.create({
     },
     topBox: {
         width: 300,
-        height: 100,
+        height: 200,
         borderColor: 'white',
         borderWidth: 3,
         marginBottom: 10,
         paddingTop: 30,  
-    },
-    buttonContainer: {
-        //flexDirection: 'row',
-        alignItems: 'flex-start',
-        borderWidth: 1,
-        borderColor: 'black',
-        padding: 10,
-        width: 215,
-        height: 165,
-        marginLeft: 40,
-        marginTop: 10,
-        borderRadius: 10,
     },
     addButton: {
         width: 100,
@@ -141,21 +125,9 @@ const styles = StyleSheet.create({
     },
     bottomBox: {
         width: 300,
-        height: 400,
+        height: 300,
         borderColor: 'white',
         borderWidth: 3,
-    },
-    buttonContainer2: {
-        //flexDirection: 'row',
-        alignItems: 'flex-start',
-        borderWidth: 1,
-        borderColor: 'black',
-        padding: 10,
-        width: 215,
-        height: 100,
-        marginLeft: 40,
-        marginTop: 10,
-        borderRadius: 10,
     },
     walletButton: {
         width: 80,
