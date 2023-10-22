@@ -1,12 +1,13 @@
-FROM node:18
+FROM Node:17-alpine
 
-WORKDIR /usr/src/app
-COPY package*.json ./
-#Copying package.json, package.json-lock with their dependencies
+WORKDIR /app
+
+COPY package.json .
+
 RUN npm install
+
 COPY . .
 
-#Exposing ports
-EXPOSE 8080
-#Start command
+EXPOSE 3000
+
 CMD ["npx", "expo"]
