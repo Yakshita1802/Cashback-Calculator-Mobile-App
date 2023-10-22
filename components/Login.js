@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AppRegistry, StyleSheet, Text, TextInput, Touchable, TouchableHighlight, View } from 'react-native';
 import Constants from 'expo-constants';
-import Signup from './Signup';
+
 
 export default class App extends Component{
     state = {
