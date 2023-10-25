@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from './SafeAreaContext';
-import type { Edge, NativeSafeAreaViewProps } from './SafeArea.types';
+import type {
+  Edge,
+  NativeSafeAreaViewInstance,
+  NativeSafeAreaViewProps,
+} from './SafeArea.types';
 
 // prettier-ignore
 const TOP    = 0b1000,
@@ -19,17 +23,23 @@ const edgeBitmaskMap: Record<Edge, number> = {
   left: LEFT,
 };
 
-export function SafeAreaView({
-  style = {},
-  mode,
-  edges,
-  ...rest
-}: NativeSafeAreaViewProps) {
+export const SafeAreaView = React.forwardRef<
+  NativeSafeAreaViewInstance,
+  NativeSafeAreaViewProps
+>(({ style = {}, mode, edges, ...rest }, ref) => {
   const insets = useSafeAreaInsets();
 
   const edgeBitmask =
     edges != null
-      ? edges.reduce((accum, edge) => accum | edgeBitmaskMap[edge], 0)
+      ? Array.isArray(edges)
+        ? edges.reduce(
+            (acc: number, edge: Edge) => acc | edgeBitmaskMap[edge],
+            0,
+          )
+        : Object.keys(edges).reduce(
+            (acc, edge) => acc | edgeBitmaskMap[edge as Edge],
+            0,
+          )
       : ALL;
 
   const appliedStyle = React.useMemo(() => {
@@ -81,5 +91,5 @@ export function SafeAreaView({
     }
   }, [style, insets, mode, edgeBitmask]);
 
-  return <View style={appliedStyle} {...rest} />;
-}
+  return <View style={appliedStyle} {...rest} ref={ref} />;
+});
