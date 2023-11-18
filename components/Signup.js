@@ -4,7 +4,6 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import firebase from '../firebaseConfig';
 
 export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -15,6 +14,9 @@ export default function SignupScreen({ navigation }) {
       const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
+      // Capture the user's UID from the userCredential
+      const userUID = userCredential.user.uid;
+
       const emailToLowerCase = email.toLowerCase(); // Convert email to lowercase
       const userData = {
         email: emailToLowerCase, // Store the lowercase email
@@ -23,10 +25,11 @@ export default function SignupScreen({ navigation }) {
 
       const db = getFirestore();
       const usersCollection = collection(db, 'users');
-      await setDoc(doc(usersCollection, userCredential.user.uid), userData);
+      const userDocRef = doc(usersCollection, userUID); // Use the user's UID as the document ID
+      await setDoc(userDocRef, userData);
 
-      // After successful signup, navigate to the login screen
-      navigation.navigate('Login');
+      // After successfully signing up, navigate to the login screen and pass the user UID
+      navigation.navigate('Login', { userUID });
     } catch (error) {
       console.error(error.message);
     }

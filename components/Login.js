@@ -1,43 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
-import firebaseConfig from '../firebaseConfig'; 
+import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
-export default function LoginScreen() {
+export default function LoginScreen({ route }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userData, setUserData] = useState(null);
   const navigation = useNavigation();
-
-  useEffect(() => {
-    if (userData) {
-      navigation.navigate('Wallet', { userData });
-    }
-  }, [userData, navigation]);
 
   const handleLogin = async () => {
     try {
-      const auth = getAuth(); // Use getAuth without passing firebaseApp
+      const auth = getAuth();
       const emailToLowerCase = email.toLowerCase(); // Convert email to lowercase
       await signInWithEmailAndPassword(auth, emailToLowerCase, password);
 
-      console.log('Attempting to log in with email:', emailToLowerCase);
-
-      const db = getFirestore(); 
+      const db = getFirestore();
       const usersCollection = collection(db, 'users');
-      const userQuery = query(usersCollection, where('email', '==', emailToLowerCase));
-      const querySnapshot = await getDocs(userQuery);
+      const userUID = route.params.userUID; // Access userUID from route.params
 
-      if (querySnapshot.size === 0) {
+      // Use getDoc to fetch the user document based on userUID
+      const userDocRef = doc(usersCollection, userUID);
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (userDocSnapshot.exists()) {
+        console.log('User data found:', userDocSnapshot.data());
+        // Access user data from userDocSnapshot.data()
+        const userData = userDocSnapshot.data();
+
+        // After successful login, navigate to the Wallet screen and pass the user UID
+        navigation.navigate('Wallet', { userUID, userData });
+      } else {
         console.log('No user found in Firestore');
         Alert.alert('Error', 'User does not exist. Please sign up first.');
-      } else {
-        console.log('User data found:', querySnapshot.docs[0].data());
-        querySnapshot.forEach((doc) => {
-          setUserData(doc.data());
-        });
       }
     } catch (error) {
       console.error(error.message);

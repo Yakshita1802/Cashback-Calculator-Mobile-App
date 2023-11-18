@@ -1,50 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import * as firebase from 'firebase/app'; // Import Firebase
-import 'firebase/database';
+import { View, Text, ScrollView, StyleSheet, Button, Alert } from 'react-native';
+import { ref, get } from 'firebase/database';
+import { database } from '../firebaseConfig'; // Import your Realtime Firebase configuration
+import { collection, doc, setDoc, getFirestore } from 'firebase/firestore';
 
-export default function CardDetails({ route }) {
+export default function CardDetail({ route }) {
   const { cardData } = route.params;
   const [cardDetails, setCardDetails] = useState(null);
 
   useEffect(() => {
-    // Reference to the 'Sheet1' node in the Realtime Database
-    const sheet1Ref = firebase.database().ref('Sheet1');
+    const fetchCardDetails = async () => {
+      try {
+        const cardRef = ref(database, 'cards', cardData.id); 
+        const cardSnapshot = await get(cardRef);
 
-    // Query the database to find the card by 'Card Name'
-    sheet1Ref
-      .orderByChild('Card Name')
-      .equalTo(cardData['Card Name'])
-      .once('value', (snapshot) => {
-        if (snapshot.exists()) {
-          // Card data found, update the state
-          setCardDetails(snapshot.val());
+        if (cardSnapshot.exists()) {
+          const detailedCardData = cardSnapshot.val();
+          setCardDetails(detailedCardData);
         } else {
-          console.log('Card not found in the database');
+          console.log('Card not found in Realtime Database');
         }
-      });
-
-    // Clean up the database reference when the component unmounts
-    return () => {
-      sheet1Ref.off();
+      } catch (error) {
+        console.error('Error fetching detailed card data:', error);
+      }
     };
-  }, [cardData]);
+
+    fetchCardDetails();
+  }, [cardData.id]);
+
+  const handleSomeAction = async () => {
+    try {
+      const db = getFirestore();
+      const userRef = doc(db, 'users', 'someUserId'); // Adjust the path based on your Firestore structure
+      await setDoc(userRef, { someField: 'someValue' }, { merge: true });
+      Alert.alert('Success', 'Data updated successfully!');
+    } catch (error) {
+      console.error('Error updating data:', error);
+      Alert.alert('Error', 'Failed to update data.');
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Card Details:</Text>
-      <View style={styles.cardDetails}>
-        {cardDetails ? (
-          Object.entries(cardDetails).map(([key, value]) => (
-            <Text key={key}>
-              {key}: {value}
-            </Text>
-          ))
-        ) : (
-          <Text>Card details are loading...</Text>
-        )}
-      </View>
-    </View>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Card Details</Text>
+      {cardDetails && (
+        <View>
+          <Text>{`Card Name: ${cardDetails.CardName}`}</Text>
+          {/* Display other card details here */}
+        </View>
+      )}
+      <Button title="Perform Some Action" onPress={handleSomeAction} />
+    </ScrollView>
   );
 }
 
@@ -57,13 +63,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 10,
-    textAlign: 'center',
-  },
-  cardDetails: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 16,
-    marginVertical: 8,
-    borderRadius: 10,
   },
 });

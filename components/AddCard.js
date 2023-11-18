@@ -1,119 +1,99 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Button, Alert } from 'react-native';
 import { ref, get } from 'firebase/database';
-import { database } from '../firebaseConfig';
-import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, setDoc, collection, query, where, getDoc } from 'firebase/firestore';
+import { database, db } from '../firebaseConfig'; // Import your Realtime Firebase configuration
+import { collection, doc, setDoc } from 'firebase/firestore'; // Import Firestore methods
 
-function AddCard({ route }) {
+export default function AddCard({ route }) {
   const { issuer } = route.params;
+  const userUID = route.params.userUID;
+
   const [cards, setCards] = useState([]);
-  const [selectedCards, setSelectedCards] = useState([]); // To store selected cards
-  const [searchText, setSearchText] = useState('');
-  const user = getAuth().currentUser;
+  const [selectedCardKeys, setSelectedCardKeys] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sheet1Ref = ref(database, 'Sheet1');
-        const dataSnapshot = await get(sheet1Ref);
+        const cardDataRef = ref(database, 'cards'); // Use Realtime Firebase reference
+        const dataSnapshot = await get(cardDataRef);
 
         if (dataSnapshot.exists()) {
-          const cardsData = [];
-          dataSnapshot.forEach((childSnapshot) => {
-            if (childSnapshot.val().Issuer === issuer) {
-              cardsData.push(childSnapshot.val()['Card Name']);
-            }
-          });
+          const cardData = dataSnapshot.val();
+          const cardList = Object.entries(cardData).map(([key, value]) => ({
+            key,
+            ...value,
+          }));
 
-          setCards(cardsData);
+          const issuerCards = cardList.filter((card) => card['Issuer'] === issuer);
+
+          setCards(issuerCards);
         } else {
-          console.log('No data found in Realtime Database');
+          console.log('No card data found in Realtime Firebase');
         }
       } catch (error) {
-        console.error('Error fetching data from Realtime Database:', error);
+        console.error('Error fetching data from Realtime Firebase:', error);
       }
     };
 
     fetchData();
   }, [issuer]);
 
-  const filteredCards = cards.filter(
-    (card) =>
-      card.toLowerCase().includes(searchText.toLowerCase()) // Case-insensitive search
-  );
+  const handleToggleCardSelection = (cardKey) => {
+    setSelectedCardKeys((prevSelectedCardKeys) => {
+      if (prevSelectedCardKeys.includes(cardKey)) {
+        return prevSelectedCardKeys.filter((key) => key !== cardKey);
+      } else {
+        return [...prevSelectedCardKeys, cardKey];
+      }
+    });
+  };
 
   const handleAddToWallet = async () => {
-    if (user) {
-      const db = getFirestore();
-      const userRef = doc(db, 'users', user.uid);
+    try {
+      if (Array.isArray(selectedCardKeys) && selectedCardKeys.length > 0) {
+        const userWalletRef = collection(db, 'users', userUID, 'Wallet'); // Firestore reference
 
-      // Fetch the user's current wallet cards
-      const userSnapshot = await getDoc(userRef);
-      const userData = userSnapshot.data();
-      const currentWallet = userData.wallet || [];
+        selectedCardKeys.forEach(async (cardKey) => {
+          const selectedCard = cards.find((card) => card.key === cardKey);
 
-      // Filter out the selected cards that are already in the wallet
-      const cardsToAdd = selectedCards.filter((selectedCard) => !currentWallet.includes(selectedCard));
+          if (selectedCard) {
+            const cardDocRef = doc(userWalletRef, selectedCard.key);
 
-      if (cardsToAdd.length === 0) {
-        Alert.alert('Info', 'All selected cards are already in your wallet.');
-        return;
+            const cardData = {
+              CardName: selectedCard.CardName,
+              Issuer: selectedCard.Issuer,
+              // Add other properties as needed
+            };
+
+            await setDoc(cardDocRef, cardData);
+          }
+        });
+
+        Alert.alert('Success', 'Selected cards added to your wallet.');
+      } else {
+        Alert.alert('Info', 'Please select cards before adding them to your wallet.');
       }
-
-      // Add the selected cards to the user's wallet
-      const updatedWallet = [...currentWallet, ...cardsToAdd];
-
-      // Update the user's wallet in Firestore
-      await setDoc(userRef, { wallet: updatedWallet }, { merge: true });
-
-      // Clear the selected cards
-      setSelectedCards([]);
-
-      // Provide feedback to the user
-      Alert.alert('Success', 'Selected cards added to your wallet.');
-    } else {
-      console.log('User is not authenticated.');
+    } catch (error) {
+      console.error('Error adding cards to the wallet:', error);
+      Alert.alert('Error', 'An error occurred while adding the cards to your wallet.');
     }
-  };
-
-  const toggleCardSelection = (card) => {
-    // Toggle the card's selection status
-    if (selectedCards.includes(card)) {
-      setSelectedCards(selectedCards.filter((selectedCard) => selectedCard !== card));
-    } else {
-      setSelectedCards([...selectedCards, card]);
-    }
-  };
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add Card</Text>
-      <Text style={styles.subtitle}>Issuer: {issuer}</Text>
-      <Text style={styles.subtitle}>Available Cards:</Text>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search Card"
-        onChangeText={(text) => setSearchText(text)}
-        value={searchText}
-      />
-      <FlatList
-        data={filteredCards}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => toggleCardSelection(item)}>
-            <View style={styles.cardItem}>
-              <Text style={styles.cardText}>{item}</Text>
-              {selectedCards.includes(item) ? (
-                <Text style={styles.selectedText}>Selected</Text>
-              ) : null}
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-      {filteredCards.length > 0 && (
-        <Button title="Add Selected to Wallet" onPress={handleAddToWallet} />
-      )}
+      <Text style={styles.title}>Add Cards</Text>
+      <ScrollView style={styles.cardList}>
+        {cards.map((card) => (
+          <View key={card.key}>
+            <Text style={styles.cardText}>{card['CardName']}</Text>
+            <Button
+              title={selectedCardKeys.includes(card.key) ? 'Remove from Wallet' : 'Add to Wallet'}
+              onPress={() => handleToggleCardSelection(card.key)}
+            />
+          </View>
+        ))}
+      </ScrollView>
+      <Button title="Add to Wallet" onPress={handleAddToWallet} />
     </View>
   );
 }
@@ -129,38 +109,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
   },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 8,
-  },
-  searchBar: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginTop: 8,
-    paddingLeft: 8,
+  cardList: {
     width: '100%',
-  },
-  cardItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 8,
-    borderColor: 'blue', // Add a blue border
-    borderWidth: 1, // Set the border width
-    borderRadius: 5, // Add some border radius for rounded corners
-    padding: 8, // Add padding to make it look better
   },
   cardText: {
     fontSize: 18,
   },
-  selectedText: {
-    fontSize: 16,
-    color: 'green',
-    fontWeight: 'bold',
-  },
 });
-
-export default AddCard;

@@ -1,27 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { ref, get } from 'firebase/database';
 import { useNavigation } from '@react-navigation/native';
+import { database } from '../firebaseConfig'; // Import your Firebase configuration
 
 export default function UserWallet() {
   const [userWallet, setUserWallet] = useState([]);
   const user = getAuth().currentUser;
-  const navigation = useNavigation(); // Initialize navigation hook
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (user) {
-      const db = getFirestore();
-      const userRef = doc(db, 'users', user.uid);
+      const userUid = user.uid;
+      const userWalletRef = ref(database, 'users', userUid, 'wallet');
 
-      getDoc(userRef)
-        .then((docSnapshot) => {
-          const wallet = docSnapshot.data()?.wallet || [];
-          setUserWallet(wallet);
-        })
-        .catch((error) => {
+      const fetchUserWallet = async () => {
+        try {
+          const snapshot = await get(userWalletRef);
+
+          if (snapshot.exists()) {
+            const walletData = snapshot.val();
+            const walletArray = Object.values(walletData);
+            setUserWallet(walletArray);
+          }
+        } catch (error) {
           console.error('Error fetching user wallet:', error);
-        });
+        }
+      };
+
+      fetchUserWallet();
     }
   }, [user]);
 
@@ -35,8 +43,7 @@ export default function UserWallet() {
           <TouchableOpacity
             style={styles.card}
             onPress={() => {
-              // Navigate to CardDetails and pass the card data
-              navigation.navigate('CardDetails', { cardData: item });
+              navigation.navigate('CardDetails', { cardKey: item });
             }}
           >
             <Text>Card: {item}</Text>

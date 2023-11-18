@@ -1,44 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 
-function CardIssuerSelector({ navigation }) {
-  const [cardIssuers, setCardIssuers] = useState([]);
+export default function CardIssuerSelector({ route }) {
+  const navigation = useNavigation();
+  const userUID = route.params.userUID; // Access userUID from route.params
+
+  const [issuers, setIssuers] = useState([]);
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchIssuers = async () => {
       try {
-        const sheet1Ref = ref(database, 'Sheet1');
-        const dataSnapshot = await get(sheet1Ref);
+        const cardDataRef = ref(database, 'cards'); // Assuming you have a 'cards' node in Realtime Firebase
+        const dataSnapshot = await get(cardDataRef);
 
         if (dataSnapshot.exists()) {
-          const uniqueIssuers = {};
+          const cardData = dataSnapshot.val();
+          const uniqueIssuers = [...new Set(Object.values(cardData).map(card => card.Issuer))];
 
-          dataSnapshot.forEach((childSnapshot) => {
-            const issuer = childSnapshot.val().Issuer;
-            uniqueIssuers[issuer] = true;
-          });
-
-          const uniqueIssuersArray = Object.keys(uniqueIssuers);
-
-          setCardIssuers(uniqueIssuersArray);
+          setIssuers(uniqueIssuers);
         } else {
-          console.log('No data found in Realtime Database');
+          console.log('No card data found in Realtime Firebase');
         }
       } catch (error) {
-        console.error('Error fetching data from Realtime Database:', error);
+        console.error('Error fetching issuers from Realtime Firebase:', error);
       }
     };
 
-    fetchData();
+    fetchIssuers();
   }, []);
-
-  const filteredIssuers = cardIssuers.filter(
-    (issuer) =>
-      issuer.toLowerCase().includes(searchText.toLowerCase()) // Case-insensitive search
-  );
 
   return (
     <View style={styles.container}>
@@ -50,12 +43,22 @@ function CardIssuerSelector({ navigation }) {
         value={searchText}
       />
       <FlatList
-        data={filteredIssuers}
+        data={issuers.filter(
+          (issuer) => issuer.toLowerCase().includes(searchText.toLowerCase())
+        )}
         keyExtractor={(item) => item}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('AddCard', { issuer: item })}>
-            <Text style={styles.issuerItem}>{item}</Text>
-          </TouchableOpacity>
+          <View style={styles.issuerItem}>
+            <Button
+              title={item}
+              onPress={() => {
+                navigation.navigate('AddCard', {
+                  userUID: userUID,
+                  issuer: item,
+                });
+              }}
+            />
+          </View>
         )}
       />
     </View>
@@ -83,14 +86,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   issuerItem: {
-    fontSize: 18,
-    marginTop: 8,
-    color: 'blue',
-    borderWidth: 1, // Add a border
-    borderColor: 'blue', // Set the border color to blue
-    borderRadius: 5, // Add some border radius for rounded corners
-    padding: 8, // Add padding to make it look better
+    marginBottom: 10,
   },
 });
-
-export default CardIssuerSelector;
