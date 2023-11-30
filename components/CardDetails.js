@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Button, Alert } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ref, get } from 'firebase/database';
-import { database } from '../firebaseConfig'; // Import your Realtime Firebase configuration
-import { collection, doc, setDoc, getFirestore } from 'firebase/firestore';
+import { database } from '../firebaseConfig';
 
-export default function CardDetail({ route }) {
-  const { cardData } = route.params;
+export default function CardDetails({ route }) {
+  const { cardId } = route.params;
   const [cardDetails, setCardDetails] = useState(null);
 
   useEffect(() => {
     const fetchCardDetails = async () => {
       try {
-        const cardRef = ref(database, 'cards', cardData.id); 
+        const cardRef = ref(database, 'cards', cardId);
         const cardSnapshot = await get(cardRef);
+
+        console.log('Card Snapshot:', cardSnapshot.val());
 
         if (cardSnapshot.exists()) {
           const detailedCardData = cardSnapshot.val();
@@ -26,19 +27,8 @@ export default function CardDetail({ route }) {
     };
 
     fetchCardDetails();
-  }, [cardData.id]);
-
-  const handleSomeAction = async () => {
-    try {
-      const db = getFirestore();
-      const userRef = doc(db, 'users', 'someUserId'); // Adjust the path based on your Firestore structure
-      await setDoc(userRef, { someField: 'someValue' }, { merge: true });
-      Alert.alert('Success', 'Data updated successfully!');
-    } catch (error) {
-      console.error('Error updating data:', error);
-      Alert.alert('Error', 'Failed to update data.');
-    }
-  };
+  }, [cardId]);
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -46,13 +36,21 @@ export default function CardDetail({ route }) {
       {cardDetails && (
         <View>
           <Text>{`Card Name: ${cardDetails.CardName}`}</Text>
-          {/* Display other card details here */}
+          <Text>{`Issuer: ${cardDetails.Issuer}`}</Text>
+          <Text>{`Network: ${cardDetails.Network}`}</Text>
+          <Text>{`Air Travel Percentage: ${cardDetails.AirTravelPercentage}`}</Text>
+          <Text>{`Dining Percentage: ${cardDetails.DiningPercentage}`}</Text>
+          <Text>{`Drugstores Percentage: ${cardDetails.DrugstoresPercentage}`}</Text>
+          <Text>{`Hotels Percentage: ${cardDetails.HotelsPercentage}`}</Text>
+          <Text>{`Lyft Percentage: ${cardDetails.LyftPercentage}`}</Text>
+          <Text>{`Everything Else Percentage: ${cardDetails.EverythingElsePercentage}`}</Text>
+          {/* Add more Text components for other properties if needed */}
         </View>
       )}
-      <Button title="Perform Some Action" onPress={handleSomeAction} />
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

@@ -10,7 +10,7 @@ export default function Profile() {
   useEffect(() => {
     // Check the authentication state to determine the user's email
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
       } else {
@@ -18,6 +18,8 @@ export default function Profile() {
         navigation.navigate('Login');
       }
     });
+
+    return () => unsubscribe(); // Unsubscribe from the auth state listener on unmount
   }, [navigation]);
 
   const handleLogout = async () => {

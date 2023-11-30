@@ -33,53 +33,57 @@ export default function Wallet() {
     fetchUserCards();
   }, [userUID]);
 
-  const handleCardPress = async (cardData) => {
-  try {
-    // Assuming cardData.id is the key in the Realtime Database
-    const cardKey = cardData.id;
-
-    // Fetch detailed card data from the Realtime Database
-    const realtimeDBRef = firebase.database().ref('cards/' + cardKey);
-    const snapshot = await realtimeDBRef.once('value');
-    const detailedCardData = snapshot.val();
-
-    // Navigate to CardDetails and pass detailedCardData
-    navigation.navigate('CardDetails', { cardData: detailedCardData });
-  } catch (error) {
-    console.error('Error fetching detailed card data:', error);
-  }
-};
+  const handleCardPress = async (cardId) => {
+    try {
+      console.log('Clicked card key:', cardId);
+      navigation.navigate('CardDetails', { cardId });
+    } catch (error) {
+      console.error('Error navigating to CardDetails:', error);
+    }
+  };
 
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Your Wallet, {userData.username}!</Text>
+return (
+  <View style={styles.container}>
+    <Text style={styles.title}>Welcome to Your Wallet, {userData.username}!</Text>
 
-      <Text style={styles.subtitle}>Your Cards:</Text>
-      <FlatList
-        data={userCards}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleCardPress(item)}>
-            <View style={styles.cardItem}>
-              <Text style={styles.cardIssuer}>Issuer: {item.Issuer}</Text>
-              <Text style={styles.cardName}>Card Name: {item.CardName}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+    <Text style={styles.subtitle}>Your Cards:</Text>
+    <FlatList
+      data={userCards}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <TouchableOpacity onPress={() => handleCardPress(item)}>
+          <View style={styles.cardItem}>
+            <Text style={styles.cardIssuer}>Issuer: {item.Issuer}</Text>
+            <Text style={styles.cardName}>Card Name: {item.CardName}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+    />
 
-      <Button
-        title="Add Card"
-        onPress={() => {
-          // Navigate to CardIssuerSelector and pass userUID
-          navigation.navigate('CardIssuerSelector', { userUID });
-        }}
-      />
-      <Button title="Category" onPress={() => {/* Navigate to Category screen */}} />
-      <Button title="Profile" onPress={() => {/* Navigate to Profile screen */}} />
-    </View>
-  );
+    <Button
+      title="Add Card"
+      onPress={() => {
+        // Navigate to CardIssuerSelector and pass userUID
+        navigation.navigate('CardIssuerSelector', { userUID });
+      }}
+    />
+    <Button
+      title="Category"
+      onPress={() => {
+        // Navigate to Category screen
+        navigation.navigate('Category');
+      }}
+    />
+    <Button
+      title="Profile"
+      onPress={() => {
+        // Navigate to Profile screen
+        navigation.navigate('Profile');
+      }}
+    />
+  </View>
+);
 }
 
 const styles = StyleSheet.create({

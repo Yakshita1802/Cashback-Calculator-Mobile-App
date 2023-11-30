@@ -8,31 +8,32 @@ export default function LoginScreen({ route }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
-
+  
   const handleLogin = async () => {
     try {
       const auth = getAuth();
-      const emailToLowerCase = email.toLowerCase(); // Convert email to lowercase
+      const emailToLowerCase = email.toLowerCase();
       await signInWithEmailAndPassword(auth, emailToLowerCase, password);
 
       const db = getFirestore();
       const usersCollection = collection(db, 'users');
-      const userUID = route.params.userUID; // Access userUID from route.params
 
-      // Use getDoc to fetch the user document based on userUID
+      // Retrieve the user document based on the logged-in user's UID
+      const userCredential = auth.currentUser;
+      const userUID = userCredential.uid;
+
+      if (!userUID || typeof userUID !== 'string' || userUID.trim() === '') {
+        throw new Error('Invalid user identification');
+      }
+
       const userDocRef = doc(usersCollection, userUID);
       const userDocSnapshot = await getDoc(userDocRef);
 
       if (userDocSnapshot.exists()) {
-        console.log('User data found:', userDocSnapshot.data());
-        // Access user data from userDocSnapshot.data()
         const userData = userDocSnapshot.data();
-
-        // After successful login, navigate to the Wallet screen and pass the user UID
         navigation.navigate('Wallet', { userUID, userData });
       } else {
-        console.log('No user found in Firestore');
-        Alert.alert('Error', 'User does not exist. Please sign up first.');
+        Alert.alert('Error', 'User data not found.');
       }
     } catch (error) {
       console.error(error.message);

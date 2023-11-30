@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -13,27 +13,27 @@ export default function SignupScreen({ navigation }) {
     try {
       const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-      // Capture the user's UID from the userCredential
       const userUID = userCredential.user.uid;
 
-      const emailToLowerCase = email.toLowerCase(); // Convert email to lowercase
+      const emailToLowerCase = email.toLowerCase();
       const userData = {
-        email: emailToLowerCase, // Store the lowercase email
+        email: emailToLowerCase,
         // Add more user properties as needed
       };
 
       const db = getFirestore();
       const usersCollection = collection(db, 'users');
-      const userDocRef = doc(usersCollection, userUID); // Use the user's UID as the document ID
+      const userDocRef = doc(usersCollection, userUID);
       await setDoc(userDocRef, userData);
 
-      // After successfully signing up, navigate to the login screen and pass the user UID
-      navigation.navigate('Login', { userUID });
+      navigation.navigate('Login'); // Navigate to Login screen after successful signup
+      Alert.alert('Success', 'Signup successful!');
     } catch (error) {
       console.error(error.message);
+      Alert.alert('Error', 'Signup failed. Please try again.');
     }
   }
+  
 
   return (
     <View style={styles.container}>
