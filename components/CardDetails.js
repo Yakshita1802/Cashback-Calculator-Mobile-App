@@ -13,11 +13,8 @@ export default function CardDetails({ route }) {
         const cardRef = ref(database, 'cards', cardId);
         const cardSnapshot = await get(cardRef);
 
-        console.log('Card Snapshot:', cardSnapshot.val());
-
         if (cardSnapshot.exists()) {
-          const detailedCardData = cardSnapshot.val();
-          setCardDetails(detailedCardData);
+          setCardDetails(cardSnapshot.val()[cardId]);
         } else {
           console.log('Card not found in Realtime Database');
         }
@@ -28,13 +25,12 @@ export default function CardDetails({ route }) {
 
     fetchCardDetails();
   }, [cardId]);
-  
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Card Details</Text>
       {cardDetails && (
-        <View>
+        <View style={styles.cardContainer}>
           <Text>{`Card Name: ${cardDetails.CardName}`}</Text>
           <Text>{`Issuer: ${cardDetails.Issuer}`}</Text>
           <Text>{`Network: ${cardDetails.Network}`}</Text>
@@ -51,7 +47,6 @@ export default function CardDetails({ route }) {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -61,5 +56,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 10,
+  },
+  cardContainer: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  cardName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
 });
