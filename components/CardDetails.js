@@ -31,7 +31,7 @@ export default function CardDetails({ route }) {
       <Text style={styles.title}>Card Details</Text>
       {cardDetails && (
         <View style={styles.cardContainer}>
-          <Text>{`Card Name: ${cardDetails.CardName}`}</Text>
+          <Text style={styles.cardName}>{`Card Name: ${cardDetails.CardName}`}</Text>
           <Text>{`Issuer: ${cardDetails.Issuer}`}</Text>
           <Text>{`Network: ${cardDetails.Network}`}</Text>
           <Text>{`Air Travel Percentage: ${cardDetails.AirTravelPercentage}`}</Text>
@@ -56,17 +56,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 10,
+    textAlign: 'center',
   },
   cardContainer: {
     borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+    borderColor: 'lightgray',
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 20,
   },
   cardName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 10,
   },
 });

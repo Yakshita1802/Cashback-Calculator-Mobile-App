@@ -3,35 +3,60 @@ import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity } from 'reac
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
-export default function Wallet() {
-  const route = useRoute();
+// Custom Header component for the top bar
+const Header = ({ title }) => (
+  <View style={styles.header}>
+    <Text style={styles.headerTitle}>{title}</Text>
+  </View>
+);
+export default function Wallet({ route, navigation }) {
   const { userUID, userData } = route.params;
-  const navigation = useNavigation();
 
   const [userCards, setUserCards] = useState([]);
+  const [savedRewards, setSavedRewards] = useState(0);
+  const [rewardBalance, setRewardBalance] = useState(0);
+
+  const fetchUserCards = async () => {
+    try {
+      const firestore = getFirestore();
+      const userWalletRef = collection(firestore, 'users', userUID, 'Wallet');
+      const querySnapshot = await getDocs(userWalletRef);
+
+      const cards = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        Issuer: doc.data().Issuer,
+        CardName: doc.data().CardName,
+      }));
+      setUserCards(cards);
+    } catch (error) {
+      console.error('Error fetching user cards:', error);
+    }
+  };
+
+  const fetchSavedRewards = async () => {
+    try {
+      const firestore = getFirestore();
+      const userRef = doc(firestore, 'users', userUID);
+      const userSnapshot = await getDoc(userRef);
+
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        setSavedRewards(userData.reward || 0);
+        setRewardBalance(userData.rewardBalance || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching saved rewards:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchUserCards = async () => {
-      try {
-        const db = getFirestore();
-        const userWalletRef = collection(db, 'users', userUID, 'Wallet');
-        const querySnapshot = await getDocs(userWalletRef);
-
-        const cards = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          Issuer: doc.data().Issuer,
-          CardName: doc.data().CardName,
-        }));
-
-        setUserCards(cards);
-      } catch (error) {
-        console.error('Error fetching user cards:', error);
-      }
-    };
-
-    fetchUserCards();
-  }, [userUID]);
-
+    if (typeof fetchUserCards === 'function') {
+      fetchUserCards();
+    }
+    if (typeof fetchSavedRewards === 'function') {
+      fetchSavedRewards();
+    }
+  }, [fetchUserCards, fetchSavedRewards]);
   const handleCardPress = async (cardId) => {
     try {
       console.log('Clicked card key:', cardId);
@@ -41,9 +66,18 @@ export default function Wallet() {
     }
   };
 
+  const handleRewardCalculation = () => {
+    try {
+      // Your logic for handling reward calculation or navigation
+      navigation.navigate('RewardsCalculation', { userUID }); // Pass userUID to RewardsCalculation screen
+    } catch (error) {
+      console.error('Error handling reward calculation:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Your Wallet, {userData.username}!</Text>
+      <Text style={styles.title}>Welcome to Your Wallet</Text>
 
       <Text style={styles.subtitle}>Your Cards:</Text>
       <FlatList
@@ -58,6 +92,10 @@ export default function Wallet() {
           </TouchableOpacity>
         )}
       />
+
+      {/* Displaying Saved Rewards and Reward Balance */}
+      <Text style={styles.savedRewardsText}>Saved Rewards: ${savedRewards}</Text>
+      
 
       <Button
         title="Add Card"
@@ -76,6 +114,10 @@ export default function Wallet() {
         onPress={() => {
           navigation.navigate('Profile');
         }}
+      />
+      <Button
+        title="Reward Calculation"
+        onPress={handleRewardCalculation}
       />
     </View>
   );
@@ -111,5 +153,9 @@ const styles = StyleSheet.create({
   },
   cardName: {
     fontSize: 18,
+  },
+  savedRewardsText: {
+    fontSize: 18,
+    marginTop: 20,
   },
 });

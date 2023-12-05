@@ -8,7 +8,7 @@ export default function LoginScreen({ route }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
-  
+
   const handleLogin = async () => {
     try {
       const auth = getAuth();
@@ -31,7 +31,18 @@ export default function LoginScreen({ route }) {
 
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
-        navigation.navigate('Wallet', { userUID, userData });
+
+        // Pass functions to fetch user cards and rewards to Wallet screen
+        navigation.navigate('Wallet', {
+          userUID,
+          userData,
+        });
+
+        // Update Wallet screen options after navigation
+        navigation.setOptions({
+          fetchUserCards: () => fetchUserCards(userUID),
+          fetchSavedRewards: () => fetchSavedRewards(userUID),
+        });
       } else {
         Alert.alert('Error', 'User data not found.');
       }
@@ -39,7 +50,42 @@ export default function LoginScreen({ route }) {
       console.error(error.message);
       Alert.alert('Error', 'An error occurred during login.');
     }
-  }
+  };
+
+  const fetchUserCards = async (userUID) => {
+    try {
+      const db = getFirestore();
+      const userWalletRef = collection(db, 'users', userUID, 'Wallet');
+      const querySnapshot = await getDocs(userWalletRef);
+
+      // Retrieve user cards and update state
+      const cards = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        Issuer: doc.data().Issuer,
+        CardName: doc.data().CardName,
+      }));
+      // Handle state update (e.g., store it in context or send it as props)
+      console.log('User cards:', cards);
+    } catch (error) {
+      console.error('Error fetching user cards:', error);
+    }
+  };
+
+  const fetchSavedRewards = async (userUID) => {
+    try {
+      const db = getFirestore();
+      const userRef = doc(db, 'users', userUID);
+      const userSnapshot = await getDoc(userRef);
+
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        // Update state with saved rewards
+        console.log('Saved rewards:', userData.reward || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching saved rewards:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>

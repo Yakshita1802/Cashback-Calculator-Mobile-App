@@ -9,9 +9,12 @@ import WalletScreen from '../components/Wallet';
 import Profile from '../components/Profile';
 import UserWallet from '../components/UserWallet';
 import AddCard from '../components/AddCard';
-import CardIssuerSelector from '../components/CardIssuerSelector'; // Import the CardIssuerSelector screen
+import CardIssuerSelector from '../components/CardIssuerSelector'; 
 import CardDetails from '../components/CardDetails';
+import CategoryScreen from '../components/Category';
+import RewardsCalculationScreen from '../components/RewardsCalculation';
 const Stack = createStackNavigator();
+
 
 const AppNavigator = () => {
   return (
@@ -25,7 +28,9 @@ const AppNavigator = () => {
         <Stack.Screen name="UserWallet" component={UserWallet} />
         <Stack.Screen name="AddCard" component={AddCard} />
         <Stack.Screen name="CardIssuerSelector" component={CardIssuerSelector} />
-        <Stack.Screen name="CardDetails" component={CardDetails} /> 
+        <Stack.Screen name="CardDetails" component={CardDetails} />
+        <Stack.Screen name="Category" component={CategoryScreen} />
+        <Stack.Screen name="RewardsCalculation" component={RewardsCalculationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
