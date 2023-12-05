@@ -1,22 +1,61 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-export default function WalletScreen() {
+export default function Wallet() {
+  const route = useRoute();
+  const { userUID, userData } = route.params;
   const navigation = useNavigation();
 
-  const handleNavigateToCategory = () => {
-    navigation.navigate('Category');
+  const [userCards, setUserCards] = useState([]);
+
+  useEffect(() => {
+    const fetchUserCards = async () => {
+      try {
+        const db = getFirestore();
+        const userWalletRef = collection(db, 'users', userUID, 'Wallet');
+
+        const querySnapshot = await getDocs(userWalletRef);
+
+        const cards = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          Issuer: doc.data().Issuer,
+          CardName: doc.data().CardName,
+        }));
+
+        setUserCards(cards);
+      } catch (error) {
+        console.error('Error fetching user cards:', error);
+      }
+    };
+
+    fetchUserCards();
+  }, [userUID]);
+
+  const handleCardPress = async (cardData) => {
+    try {
+      const cardKey = cardData.id;
+      const realtimeDBRef = firebase.database().ref('cards/' + cardKey);
+      const snapshot = await realtimeDBRef.once('value');
+      const detailedCardData = snapshot.val();
+
+      navigation.navigate('CardDetails', { cardData: detailedCardData });
+    } catch (error) {
+      console.error('Error fetching detailed card data:', error);
+    }
+  };
+
+  const handleAddCardPress = () => {
+    navigation.navigate('CardIssuerSelector', { userUID });
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image source={require('../assets/Cool-Nature-Wallpapaer-for-Download.jpg')} style={styles.image} />
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.buttonText}>Add Card</Text>
-        </TouchableOpacity>
-      </View>
+      <Image source={require('../assets/istockphoto-1343295525-612x612.jpg')} style={styles.topImage} />
+      <TouchableOpacity style={styles.addButton} onPress={handleAddCardPress}>
+        <Text style={styles.buttonText}>Add Card</Text>
+      </TouchableOpacity>
       <View style={styles.balanceContainer}>
         <View style={styles.balanceBox}>
           <Text>Reward Balance:</Text>
@@ -27,15 +66,28 @@ export default function WalletScreen() {
           <Text style={styles.balanceText}></Text>
         </View>
       </View>
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity onPress={handleNavigateToCategory}>
-          <Image source={require('../assets/user-icon.png')} style={styles.icon} />
-        </TouchableOpacity>
-        <View style={styles.iconSeparator} /> 
-        <TouchableOpacity onPress={handleNavigateToCategory}>
-          <Image source={require('../assets/wallet-icon.png')} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.title}>Welcome to Your Wallet, {userData.username}!</Text>
+      <Text style={styles.subtitle}>Your Cards:</Text>
+      <FlatList
+        data={userCards}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleCardPress(item)}>
+            <View style={styles.cardItem}>
+              <Text style={styles.cardIssuer}>Issuer: {item.Issuer}</Text>
+              <Text style={styles.cardName}>Card Name: {item.CardName}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+      <View style={styles.iconContainer}>
+      <TouchableOpacity onPress={() => {/* Navigate to User Profile screen */}}>
+        <Image source={require('../assets/user-icon.png')} style={styles.icon} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {/* Navigate to Wallet screen */}}>
+        <Image source={require('../assets/wallet-icon.png')} style={styles.icon} />
+      </TouchableOpacity>
+    </View>
     </View>
   );
 }
@@ -47,32 +99,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
   },
-  imageContainer: {
-    position: 'relative',
-  width: '110%',
-  marginBottom: 0,
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: 300, // Adjust the height as needed
-  marginBottom: 10,
-  overflow: 'hidden', // To clip the child views within the container
-  marginTop: 5,
-  padding: 10,
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  alignContent: 'center',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-  borderRadius: 10,
-  position: 'relative',
-  // Add other styles as needed
-  },
-  image: {
-    width: '120%',
-    height: '120%',
+  topImage: {
+    width: '110%',
+    height: 200, // Adjust the height as needed
     resizeMode: 'cover',
   },
+  addButton: {
+    position: 'absolute',
+    top: 20,
+    right: 10,
+    backgroundColor: 'blue',
+    padding: 16,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: 'white',
+  },
   balanceContainer: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
@@ -91,33 +134,38 @@ const styles = StyleSheet.create({
     color: 'black',
     marginTop: 1,
   },
-  centerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     marginVertical: 10,
   },
-  addButton: {
-    position: 'absolute',
-    top: 8,
-    right: 10,
-    backgroundColor: 'blue',
+  subtitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  cardItem: {
+    borderWidth: 1,
+    borderColor: 'gray',
     padding: 16,
     borderRadius: 10,
+    marginBottom: 10,
   },
-  buttonText: {
-    color: 'white',
+  cardIssuer: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  bottomContainer: {
+  cardName: {
+    fontSize: 18,
+  },
+  iconContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
-    marginTop: 350, // Increase the marginTop to adjust the space
+    width: '110%',
+    marginTop: 100, 
   },
   icon: {
-    width: 60,
-    height: 60,
-  },
-  iconSeparator: {
-    width: 160,
+    width: 40,
+    height: 40,
   },
 });
