@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
@@ -9,6 +9,10 @@ const Header = ({ title }) => (
     <Text style={styles.headerTitle}>{title}</Text>
   </View>
 );
+
+let deviceHeight: Dimensions.get('window').height;
+let deviceWidth: Dimensions.get('window').width;
+
 export default function Wallet({ route, navigation }) {
   const { userUID, userData } = route.params;
 
@@ -81,7 +85,11 @@ export default function Wallet({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Button onPress={backFunction} title="Back"/>
+      <TouchableOpacity onPress={backFunction}>
+        <View style={styles.backButton}>
+          <Text>Back</Text>
+        </View>
+      </TouchableOpacity>
       <Text style={styles.title}>Welcome to Your Wallet</Text>
 
       <Text style={styles.subtitle}>Your Cards:</Text>
@@ -134,6 +142,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
+  },
+  backButton:{
+    width: 
   },
   title: {
     fontSize: 24,
