@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
@@ -9,6 +9,7 @@ const Header = ({ title }) => (
     <Text style={styles.headerTitle}>{title}</Text>
   </View>
 );
+
 export default function Wallet({ route, navigation }) {
   const { userUID, userData } = route.params;
 
@@ -57,6 +58,7 @@ export default function Wallet({ route, navigation }) {
       fetchSavedRewards();
     }
   }, [fetchUserCards, fetchSavedRewards]);
+
   const handleCardPress = async (cardId) => {
     try {
       console.log('Clicked card key:', cardId);
@@ -77,7 +79,26 @@ export default function Wallet({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Your Wallet</Text>
+      <View style={styles.imageContainer}>
+        {/* Image */}
+        <Image
+          source={require('../assets/istockphoto-1343295525-612x612.jpg')}
+          style={styles.image}
+        />
+
+        {/* Add Card Button */}
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('CardIssuerSelector', { userUID })}>
+          <Text style={styles.buttonText}>Add Card</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.balanceContainer}>
+        {/* Available Credit Box */}
+        <View style={styles.box}>
+          <Text style={styles.boxTitle}>Available Credit</Text>
+          <Text style={styles.boxContent}>${savedRewards}</Text>
+        </View>
+      </View>
 
       <Text style={styles.subtitle}>Your Cards:</Text>
       <FlatList
@@ -93,32 +114,25 @@ export default function Wallet({ route, navigation }) {
         )}
       />
 
-      {/* Displaying Saved Rewards and Reward Balance */}
-      <Text style={styles.savedRewardsText}>Saved Rewards: ${savedRewards}</Text>
-      
+      <View style={styles.iconRow}>
+        {/* Category Icon */}
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Category')}>
+          <Image source={require('../assets/download.png')} style={styles.iconImage} />
+          <Text style={styles.iconText}>Category</Text>
+        </TouchableOpacity>
 
-      <Button
-        title="Add Card"
-        onPress={() => {
-          navigation.navigate('CardIssuerSelector', { userUID });
-        }}
-      />
-      <Button
-        title="Category"
-        onPress={() => {
-          navigation.navigate('Category');
-        }}
-      />
-      <Button
-        title="Profile"
-        onPress={() => {
-          navigation.navigate('Profile');
-        }}
-      />
-      <Button
-        title="Reward Calculation"
-        onPress={handleRewardCalculation}
-      />
+        {/* Profile Icon */}
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Profile')}>
+          <Image source={require('../assets/user-icon.jpeg')} style={styles.iconImage} />
+          <Text style={styles.iconText}>Profile</Text>
+        </TouchableOpacity>
+
+        {/* Reward Calculator Icon */}
+        <TouchableOpacity style={styles.iconButton} onPress={handleRewardCalculation}>
+          <Image source={require('../assets/images.png')} style={styles.iconImage} />
+          <Text style={styles.iconText}>Reward Calculator</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -126,14 +140,48 @@ export default function Wallet({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
     padding: 16,
   },
-  title: {
-    fontSize: 24,
+  imageContainer: {
+    position: 'relative',
+  },
+  image: {
+    width: '110%',
+    height: 200,
+    marginBottom: 10,
+    resizeMode:'cover',
+  },
+  addButton: {
+    position: 'absolute',
+    top:20,
+    left: 10,
+    backgroundColor: 'blue',
+    padding: 16,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
     fontWeight: 'bold',
-    marginVertical: 10,
+  },
+  balanceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  box: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  boxTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  boxContent: {
+    fontSize: 16,
   },
   subtitle: {
     fontSize: 18,
@@ -154,8 +202,21 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: 18,
   },
-  savedRewardsText: {
-    fontSize: 18,
-    marginTop: 20,
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 100,
+    width:'100%',
+  },
+  iconButton: {
+    alignItems: 'center',
+  },
+  iconImage: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
+  },
+  iconText: {
+    fontSize: 10,
   },
 });
