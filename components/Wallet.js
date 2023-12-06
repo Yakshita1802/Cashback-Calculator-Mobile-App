@@ -81,8 +81,7 @@ export default function Wallet({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Button onPress={backFunction} title="Back">
-      </Button>
+      <Button onPress={backFunction} title="Back"/>
       <Text style={styles.title}>Welcome to Your Wallet</Text>
 
       <Text style={styles.subtitle}>Your Cards:</Text>
