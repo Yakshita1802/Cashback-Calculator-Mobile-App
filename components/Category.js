@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
+
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
 
 export default function Category({ navigation }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [maxPercentageCards, setMaxPercentageCards] = useState([]);
+
+  const backFunction = () => {
+    navigation.navigate("Wallet");
+  }
 
   useEffect(() => {
     const fetchCardDetails = async () => {
@@ -90,7 +97,11 @@ export default function Category({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
+    height: deviceHeight,
+    width: deviceWidth,
   },
   title: {
     fontSize: 24,

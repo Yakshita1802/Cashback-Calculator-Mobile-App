@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Dimensions } from 'react-native';
 import { getFirestore, doc, getDoc, collection, addDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
 
 export default function RewardsCalculation({ route }) {
   const { userUID } = route.params;
@@ -9,6 +12,10 @@ export default function RewardsCalculation({ route }) {
   const [amountSpent, setAmountSpent] = useState('');
   const [percentage, setPercentage] = useState('');
   const [reward, setReward] = useState('');
+
+  const backFunction = () => {
+    navigation.navigate("Wallet");
+  }
 
   const calculateReward = () => {
     const spent = parseFloat(amountSpent);
@@ -52,6 +59,13 @@ export default function RewardsCalculation({ route }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Calculate Rewards</Text>
+
+      <TouchableOpacity onPress={backFunction}>
+        <View style={styles.backButton}>
+          <Text style={styles.buttonStyle}>Back</Text>
+        </View>
+      </TouchableOpacity>
+
       <TextInput
         style={styles.input}
         placeholder="Amount spent"
@@ -79,7 +93,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
+    height: deviceHeight,
+    width: deviceWidth,
   },
+
+  backButton:{
+    marginTop: 30,
+    width: deviceWidth/4,
+    height: deviceHeight/20,
+    backgroundColor: "red",
+  },
+
+  buttonStyle: {
+    fontSize: 20,
+    textAlign: "center",
+    paddingTop: 5,
+  },
+  
   title: {
     fontSize: 24,
     fontWeight: 'bold',

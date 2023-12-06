@@ -87,7 +87,7 @@ export default function Wallet({ route, navigation }) {
     <View style={styles.container}>
       <TouchableOpacity onPress={backFunction}>
         <View style={styles.backButton}>
-          <Text>Back</Text>
+          <Text style={styles.buttonStyle}>Back</Text>
         </View>
       </TouchableOpacity>
       <Text style={styles.title}>Welcome to Your Wallet</Text>
@@ -142,10 +142,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
+    height: deviceHeight,
+    width: deviceWidth,
   },
+
   backButton:{
-    width: 
+    marginTop: 30,
+    width: deviceWidth/4,
+    height: deviceHeight/20,
+    backgroundColor: "red",
   },
+
+  buttonStyle: {
+    fontSize: 20,
+    textAlign: "center",
+    paddingTop: 5,
+  },
+  
   title: {
     fontSize: 24,
     fontWeight: 'bold',
