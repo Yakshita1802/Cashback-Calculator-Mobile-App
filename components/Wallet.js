@@ -16,6 +16,10 @@ export default function Wallet({ route, navigation }) {
   const [savedRewards, setSavedRewards] = useState(0);
   const [rewardBalance, setRewardBalance] = useState(0);
 
+  const backFunction = () => {
+    navigation.navigate("Login");
+  }
+
   const fetchUserCards = async () => {
     try {
       const firestore = getFirestore();
@@ -77,6 +81,8 @@ export default function Wallet({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+      <Button onPress={backFunction} title="Back">
+      </Button>
       <Text style={styles.title}>Welcome to Your Wallet</Text>
 
       <Text style={styles.subtitle}>Your Cards:</Text>
