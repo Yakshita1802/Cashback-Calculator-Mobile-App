@@ -18,6 +18,7 @@ export default function SignupScreen({ navigation }) {
       const emailToLowerCase = email.toLowerCase();
       const userData = {
         email: emailToLowerCase,
+        password: password, // Include the password in the userData object
         // Add more user properties as needed
       };
 
