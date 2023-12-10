@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 
