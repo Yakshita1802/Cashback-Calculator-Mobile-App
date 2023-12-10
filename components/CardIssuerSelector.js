@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
-export default function CardIssuerSelector({ route }) {
-  const navigation = useNavigation();
+export default function CardIssuerSelector({ route, navigation }) {
+  /*const navigation = useNavigation();*/
   const userUID = route.params.userUID; // Access userUID from route.params
 
   const [issuers, setIssuers] = useState([]);
   const [searchText, setSearchText] = useState('');
 
   const backFunction = () => {
-    navigation.navigate("Wallet");
+    navigation.navigate("Login");
   }
 
   useEffect(() => {

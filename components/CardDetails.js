@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
-export default function CardDetails({ route }) {
+export default function CardDetails({ route, navigation }) {
   const { cardId } = route.params;
   const [cardDetails, setCardDetails] = useState(null);
 

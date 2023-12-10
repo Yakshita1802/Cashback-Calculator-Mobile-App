@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
-export default function Category({ navigation }) {
+export default function Category({ route, navigation }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [maxPercentageCards, setMaxPercentageCards] = useState([]);
@@ -81,11 +82,6 @@ export default function Category({ navigation }) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.cardContainer}>
-                    <TouchableOpacity onPress={backFunction}>
-                      <View style={styles.backButton}>
-                        <Text style={styles.buttonStyle}>Back</Text>
-                      </View>
-                    </TouchableOpacity>
                   <Text>{`Card Name: ${item.CardName}`}</Text>
                   <Text>{`${selectedCategory} Percentage: ${item[selectedCategory]}`}</Text>
                   {/* Display other card details if needed */}

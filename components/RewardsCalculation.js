@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Dimensions } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Dimensions, TouchableOpacity } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { getFirestore, doc, getDoc, collection, addDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
-export default function RewardsCalculation({ route }) {
+export default function RewardsCalculation({ route, navigation }) {
   const { userUID } = route.params;
-
+  /*const { userUID, userData } = route.params;*/
   const [amountSpent, setAmountSpent] = useState('');
   const [percentage, setPercentage] = useState('');
   const [reward, setReward] = useState('');
 
   const backFunction = () => {
-    navigation.navigate("Wallet");
+    navigation.navigate("Login");
   }
 
   const calculateReward = () => {
