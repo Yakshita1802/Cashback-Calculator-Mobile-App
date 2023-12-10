@@ -10,7 +10,7 @@ export default function CardDetails({ route }) {
   useEffect(() => {
     const fetchCardDetails = async () => {
       try {
-        const cardRef = ref(database, 'cards', cardId);
+        const cardRef = ref(database, 'cards', cardId); /*importing cards by ID from Friebase*/
         const cardSnapshot = await get(cardRef);
 
         if (cardSnapshot.exists()) {

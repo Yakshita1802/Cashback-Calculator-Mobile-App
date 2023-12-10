@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
+
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
 
 export default function CardIssuerSelector({ route }) {
   const navigation = useNavigation();
@@ -10,6 +13,10 @@ export default function CardIssuerSelector({ route }) {
 
   const [issuers, setIssuers] = useState([]);
   const [searchText, setSearchText] = useState('');
+
+  const backFunction = () => {
+    navigation.navigate("Wallet");
+  }
 
   useEffect(() => {
     const fetchIssuers = async () => {
@@ -35,6 +42,11 @@ export default function CardIssuerSelector({ route }) {
 
   return (
     <View style={styles.container}>
+        <TouchableOpacity onPress={backFunction}>
+          <View style={styles.backButton}>
+            <Text style={styles.buttonStyle}>Back</Text>
+          </View>
+        </TouchableOpacity>
       <Text style={styles.title}>Select Issuer</Text>
       <TextInput
         style={styles.searchBar}
@@ -70,6 +82,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    height: deviceHeight,
+    width: deviceWidth,
+  },
+  backButton:{
+    marginTop: 30,
+    width: deviceWidth/4,
+    height: deviceHeight/20,
+    backgroundColor: "red",
+  },
+
+  buttonStyle: {
+    fontSize: 20,
+    textAlign: "center",
+    paddingTop: 5,
   },
   title: {
     fontSize: 24,
