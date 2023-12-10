@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
+
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
 
 export default function CardDetails({ route }) {
   const { cardId } = route.params;
   const [cardDetails, setCardDetails] = useState(null);
+
+  const backFunction = () => {
+    navigation.navigate("Wallet");
+  }
 
   useEffect(() => {
     const fetchCardDetails = async () => {
@@ -28,6 +35,11 @@ export default function CardDetails({ route }) {
 
   return (
     <ScrollView style={styles.container}>
+      <TouchableOpacity onPress={backFunction}>
+        <View style={styles.backButton}>
+          <Text style={styles.buttonStyle}>Back</Text>
+        </View>
+      </TouchableOpacity>
       <Text style={styles.title}>Card Details</Text>
       {cardDetails && (
         <View style={styles.cardContainer}>
@@ -51,6 +63,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: deviceHeight,
+    width: deviceWidth,
+  },
+  backButton:{
+    marginTop: 30,
+    width: deviceWidth/4,
+    height: deviceHeight/20,
+    backgroundColor: "red",
+  },
+
+  buttonStyle: {
+    fontSize: 20,
+    textAlign: "center",
+    paddingTop: 5,
   },
   title: {
     fontSize: 24,

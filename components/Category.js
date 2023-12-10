@@ -81,6 +81,11 @@ export default function Category({ navigation }) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <View style={styles.cardContainer}>
+                    <TouchableOpacity onPress={backFunction}>
+                      <View style={styles.backButton}>
+                        <Text style={styles.buttonStyle}>Back</Text>
+                      </View>
+                    </TouchableOpacity>
                   <Text>{`Card Name: ${item.CardName}`}</Text>
                   <Text>{`${selectedCategory} Percentage: ${item[selectedCategory]}`}</Text>
                   {/* Display other card details if needed */}
@@ -102,6 +107,18 @@ const styles = StyleSheet.create({
     padding: 16,
     height: deviceHeight,
     width: deviceWidth,
+  },
+  backButton:{
+    marginTop: 30,
+    width: deviceWidth/4,
+    height: deviceHeight/20,
+    backgroundColor: "red",
+  },
+
+  buttonStyle: {
+    fontSize: 20,
+    textAlign: "center",
+    paddingTop: 5,
   },
   title: {
     fontSize: 24,
