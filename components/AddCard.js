@@ -16,7 +16,7 @@ export default function AddCard({ route, navigation }) {
   const [selectedCardKeys, setSelectedCardKeys] = useState([]);
 
   const backFunction = () => {
-    navigation.navigate("Wallet");
+    navigation.navigate("Login");
   }
 
   useEffect(() => {
