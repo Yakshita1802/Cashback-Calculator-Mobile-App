@@ -31,7 +31,8 @@
     "react-navigation-web": "^0.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "expo-cli": "^6.3.10"
   },
   "hermes": {
     "builds": {
