@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Button, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database, db } from '../firebaseConfig'; // Import your Realtime Firebase configuration
 import { collection, doc, setDoc } from 'firebase/firestore'; // Import Firestore methods
@@ -10,6 +10,7 @@ export default function AddCard({ route }) {
 
   const [cards, setCards] = useState([]);
   const [selectedCardKeys, setSelectedCardKeys] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,21 +80,39 @@ export default function AddCard({ route }) {
     }
   }
 
+  const filteredCards = cards.filter(
+    (card) =>
+      card['CardName'].toLowerCase().includes(searchText.toLowerCase()) ||
+      card['Issuer'].toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add Cards</Text>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search Cards"
+        onChangeText={(text) => setSearchText(text)}
+        value={searchText}
+      />
       <ScrollView style={styles.cardList}>
-        {cards.map((card) => (
-          <View key={card.key}>
-            <Text style={styles.cardText}>{card['CardName']}</Text>
-            <Button
-              title={selectedCardKeys.includes(card.key) ? 'Remove from Wallet' : 'Add to Wallet'}
-              onPress={() => handleToggleCardSelection(card.key)}
-            />
+        {filteredCards.map((card) => (
+          <View key={card.key} style={styles.cardContainer}>
+            <View style={styles.cardInfo}>
+              <Text style={styles.cardText}>{card['CardName']}</Text>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => handleToggleCardSelection(card.key)}
+              >
+                <Text style={styles.addButtonText}>Add</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </ScrollView>
-      <Button title="Add to Wallet" onPress={handleAddToWallet} />
+      <TouchableOpacity style={styles.addToWalletButton} onPress={handleAddToWallet}>
+        <Text style={styles.addToWalletText}>Add to Wallet</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -101,18 +120,60 @@ export default function AddCard({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: 35,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginBottom: 10,
   },
   cardList: {
     width: '100%',
   },
+  cardContainer: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: '#F3F3F3',
+    borderRadius: 8,
+  },
+  cardInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   cardText: {
     fontSize: 18,
+  },
+  addButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  addToWalletButton: {
+    backgroundColor: '#34C759',
+    borderRadius: 8,
+    alignItems: 'center',
+    paddingVertical: 15,
+    marginBottom: 20,
+  },
+  addToWalletText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  searchBar: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginTop: 8,
+    paddingLeft: 8,
+    marginBottom: 10,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
@@ -33,6 +33,20 @@ export default function CardIssuerSelector({ route }) {
     fetchIssuers();
   }, []);
 
+  const renderIssuerItem = ({ item }) => (
+    <View style={styles.issuerBox}>
+      <Button
+        title={item}
+        onPress={() => {
+          navigation.navigate('AddCard', {
+            userUID: userUID,
+            issuer: item,
+          });
+        }}
+      />
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select Issuer</Text>
@@ -42,25 +56,17 @@ export default function CardIssuerSelector({ route }) {
         onChangeText={(text) => setSearchText(text)}
         value={searchText}
       />
-      <FlatList
-        data={issuers.filter(
-          (issuer) => issuer.toLowerCase().includes(searchText.toLowerCase())
-        )}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <View style={styles.issuerItem}>
-            <Button
-              title={item}
-              onPress={() => {
-                navigation.navigate('AddCard', {
-                  userUID: userUID,
-                  issuer: item,
-                });
-              }}
-            />
-          </View>
-        )}
-      />
+      <ScrollView style={styles.scrollView}>
+        {issuers
+          .filter((issuer) =>
+            issuer.toLowerCase().includes(searchText.toLowerCase())
+          )
+          .map((item, index) => (
+            <View key={index}>
+              {renderIssuerItem({ item })} 
+            </View>
+          ))}
+      </ScrollView>
     </View>
   );
 }
@@ -68,11 +74,11 @@ export default function CardIssuerSelector({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 30,
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     marginVertical: 10,
   },
@@ -83,9 +89,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 8,
     paddingLeft: 8,
-    width: '100%',
+    width: '90%', // Adjust the width as needed
   },
-  issuerItem: {
+  issuerBox: {
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    padding: 10,
+  },
+  scrollView: {
+    width: '90%',
+    marginTop: 10,
+    marginBottom: 20,
+    maxHeight: '70%', // Adjust the max height as needed
   },
 });

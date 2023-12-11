@@ -16,7 +16,6 @@ export default function Category({ navigation }) {
 
         if (cardsSnapshot.exists()) {
           const cardsData = cardsSnapshot.val();
-          // Extract categories from the card details
           const uniqueCategories = Object.keys(cardsData[Object.keys(cardsData)[0]])
             .filter(key => key !== 'CardName' && key !== 'Issuer' && key !== 'Network' && key !== 'id');
           setCategories(uniqueCategories);
@@ -53,37 +52,34 @@ export default function Category({ navigation }) {
   };
 
   return (
-    <FlatList
-      style={styles.container}
-      ListHeaderComponent={
-        <Text style={styles.title}>Categories</Text>
-      }
-      data={categories}
-      keyExtractor={(item) => item}
-      renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => findMaxPercentageCards(item)}>
-          <Text style={styles.category}>{item}</Text>
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <Text style={styles.title}>Categories</Text>
+      <FlatList
+        data={categories}
+        keyExtractor={(item) => item}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => findMaxPercentageCards(item)} style={styles.categoryButton}>
+            <Text style={styles.categoryText}>{item}</Text>
+          </TouchableOpacity>
+        )}
+      />
+      {selectedCategory && (
+        <>
+          <Text style={styles.title}>Max Percentage Cards for {selectedCategory}</Text>
+          <FlatList
+            data={maxPercentageCards}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.cardContainer}>
+                <Text style={styles.cardName}>{item.CardName}</Text>
+                <Text>{`${selectedCategory} Percentage: ${item[selectedCategory]}`}</Text>
+                {/* Display other card details if needed */}
+              </View>
+            )}
+          />
+        </>
       )}
-      ListFooterComponent={
-        selectedCategory && (
-          <>
-            <Text style={styles.title}>Max Percentage Cards for {selectedCategory}</Text>
-            <FlatList
-              data={maxPercentageCards}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <View style={styles.cardContainer}>
-                  <Text>{`Card Name: ${item.CardName}`}</Text>
-                  <Text>{`${selectedCategory} Percentage: ${item[selectedCategory]}`}</Text>
-                  {/* Display other card details if needed */}
-                </View>
-              )}
-            />
-          </>
-        )
-      }
-    />
+    </View>
   );
 }
 
@@ -91,23 +87,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginBottom: 10,
+    textAlign: 'center',
   },
-  category: {
+  categoryButton: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'blue',
+    borderRadius: 5,
+    marginBottom: 10,
+    alignItems: 'center',
+    backgroundColor: 'lightblue',
+  },
+  categoryText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'blue',
+  },
+  cardContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 12,
+    marginBottom: 10,
+    backgroundColor: '#f9f9f9',
+  },
+  cardName: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'blue',
   },
-  cardContainer: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
 });
+

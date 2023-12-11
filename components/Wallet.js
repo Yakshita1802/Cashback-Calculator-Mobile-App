@@ -79,6 +79,8 @@ export default function Wallet({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+      <Header title="Wallet" />
+
       <View style={styles.imageContainer}>
         {/* Image */}
         <Image
@@ -121,16 +123,16 @@ export default function Wallet({ route, navigation }) {
           <Text style={styles.iconText}>Category</Text>
         </TouchableOpacity>
 
-        {/* Profile Icon */}
-        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Profile')}>
-          <Image source={require('../assets/user-icon.jpeg')} style={styles.iconImage} />
-          <Text style={styles.iconText}>Profile</Text>
-        </TouchableOpacity>
-
-        {/* Reward Calculator Icon */}
-        <TouchableOpacity style={styles.iconButton} onPress={handleRewardCalculation}>
+        {/* Reward Calculator Icon centered */}
+        <TouchableOpacity style={[styles.iconButton, styles.centerIcon]} onPress={handleRewardCalculation}>
           <Image source={require('../assets/images.png')} style={styles.iconImage} />
           <Text style={styles.iconText}>Reward Calculator</Text>
+        </TouchableOpacity>
+
+        {/* Profile Icon */}
+        <TouchableOpacity style={[styles.iconButton, { marginLeft: 'auto' }]} onPress={() => navigation.navigate('Profile')}>
+          <Image source={require('../assets/user-icon.jpeg')} style={styles.iconImage} />
+          <Text style={styles.iconText}>Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -142,6 +144,17 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 25, // Adjust the padding to change the height of the top bar
+  },
+  headerTitle: {
+    fontSize: 30, // Adjust the font size of the title
+    fontWeight: 'bold',
+  },
   imageContainer: {
     position: 'relative',
   },
@@ -149,11 +162,11 @@ const styles = StyleSheet.create({
     width: '110%',
     height: 200,
     marginBottom: 10,
-    resizeMode:'cover',
+    resizeMode: 'cover',
   },
   addButton: {
     position: 'absolute',
-    top:20,
+    top: 20,
     left: 10,
     backgroundColor: 'blue',
     padding: 16,
@@ -205,11 +218,16 @@ const styles = StyleSheet.create({
   iconRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 100,
-    width:'100%',
+    marginTop: 20, // Decrease this value to adjust the distance from the content above
+    width: '100%',
+    backgroundColor: '#f0f0f0', // Optional: Add a background color for better visualization
+    height: 70, // Adjust the height of the bottom bar
   },
+  
   iconButton: {
+    flex: 1,
     alignItems: 'center',
+    paddingVertical: 8, // Adjust the vertical padding to change the button size
   },
   iconImage: {
     width: 50,
@@ -218,5 +236,10 @@ const styles = StyleSheet.create({
   },
   iconText: {
     fontSize: 10,
+  },
+  centerIcon: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

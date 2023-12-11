@@ -31,16 +31,38 @@ export default function CardDetails({ route }) {
       <Text style={styles.title}>Card Details</Text>
       {cardDetails && (
         <View style={styles.cardContainer}>
-          <Text style={styles.cardName}>{`Card Name: ${cardDetails.CardName}`}</Text>
-          <Text>{`Issuer: ${cardDetails.Issuer}`}</Text>
-          <Text>{`Network: ${cardDetails.Network}`}</Text>
-          <Text>{`Air Travel Percentage: ${cardDetails.AirTravelPercentage}`}</Text>
-          <Text>{`Dining Percentage: ${cardDetails.DiningPercentage}`}</Text>
-          <Text>{`Drugstores Percentage: ${cardDetails.DrugstoresPercentage}`}</Text>
-          <Text>{`Hotels Percentage: ${cardDetails.HotelsPercentage}`}</Text>
-          <Text>{`Lyft Percentage: ${cardDetails.LyftPercentage}`}</Text>
-          <Text>{`Everything Else Percentage: ${cardDetails.EverythingElsePercentage}`}</Text>
-          {/* Add more Text components for other properties if needed */}
+          <View style={styles.cardInfo}>
+            <Text style={styles.cardName}>{`Card Name: ${cardDetails.CardName}`}</Text>
+            <Text>{`Issuer: ${cardDetails.Issuer}`}</Text>
+          </View>
+          <View style={styles.detailsSection}>
+            <Text style={styles.detailsTitle}>Rewards</Text>
+            <View style={styles.detailsRow}>
+              <Text style={styles.detailsLabel}>Air Travel:</Text>
+              <Text>{`${cardDetails.AirTravelPercentage}%`}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.detailsLabel}>Dining:</Text>
+              <Text>{`${cardDetails.DiningPercentage}%`}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.detailsLabel}>Drugstores:</Text>
+              <Text>{`${cardDetails.DrugstoresPercentage}%`}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.detailsLabel}>Hotels:</Text>
+              <Text>{`${cardDetails.HotelsPercentage}%`}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.detailsLabel}>Lyft:</Text>
+              <Text>{`${cardDetails.LyftPercentage}%`}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Text style={styles.detailsLabel}>Everything Else:</Text>
+              <Text>{`${cardDetails.EverythingElsePercentage}%`}</Text>
+            </View>
+            {/* Add more details rows for other properties if needed */}
+          </View>
         </View>
       )}
     </ScrollView>
@@ -61,13 +83,35 @@ const styles = StyleSheet.create({
   cardContainer: {
     borderWidth: 1,
     borderColor: 'lightgray',
-    padding: 16,
     borderRadius: 10,
+    padding: 16,
     marginBottom: 20,
+  },
+  cardInfo: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgray',
+    marginBottom: 16,
+    paddingBottom: 16,
   },
   cardName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  detailsSection: {
+    marginTop: 10,
+  },
+  detailsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  detailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  detailsLabel: {
+    fontWeight: 'bold',
   },
 });

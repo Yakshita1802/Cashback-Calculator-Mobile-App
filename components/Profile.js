@@ -8,26 +8,22 @@ export default function Profile() {
   const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
-    // Check the authentication state to determine the user's email
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
       } else {
-        // User is not authenticated, handle it as needed (e.g., redirect to login)
         navigation.navigate('Login');
       }
     });
 
-    return () => unsubscribe(); // Unsubscribe from the auth state listener on unmount
+    return () => unsubscribe();
   }, [navigation]);
 
   const handleLogout = async () => {
     try {
       const auth = getAuth();
-      await signOut(auth); // Sign the user out from Firebase
-
-      // After logging out, navigate to the login screen
+      await signOut(auth);
       navigation.navigate('Login');
     } catch (error) {
       console.error('Error during logout:', error.message);
@@ -36,8 +32,8 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <Text>User Email: {userEmail ? userEmail : 'Loading...'}</Text>
-      <Button title="Logout" onPress={handleLogout} />
+      <Text style={styles.emailText}>User Email: {userEmail ? userEmail : 'Loading...'}</Text>
+      <Button title="Logout" onPress={handleLogout} color="#FF5733" />
     </View>
   );
 }
@@ -48,5 +44,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
+    backgroundColor: '#fff', // Background color
+  },
+  emailText: {
+    marginBottom: 20,
+    fontSize: 18,
+    color: '#333', // Text color
+    fontWeight: 'bold',
   },
 });
