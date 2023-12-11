@@ -6,13 +6,14 @@ import { database } from '../firebaseConfig';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
-
+/*Here, I placed everything inside parent view, for some reason scrollView causes problems to the navigation function*/
+/*the back button can navigate to the Login view, kepping the user signed in. The same does not apply to Wallet page*/
 export default function CardDetails({ route, navigation }) {
   const { cardId } = route.params;
   const [cardDetails, setCardDetails] = useState(null);
 
   const backFunction = () => {
-    navigation.navigate("Wallet");
+    navigation.navigate("Login");
   }
 
   useEffect(() => {
@@ -35,7 +36,8 @@ export default function CardDetails({ route, navigation }) {
   }, [cardId]);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
       <TouchableOpacity onPress={backFunction}>
         <View style={styles.backButton}>
           <Text style={styles.buttonStyle}>Back</Text>
@@ -55,8 +57,8 @@ export default function CardDetails({ route, navigation }) {
           <Text>{`Everything Else Percentage: ${cardDetails.EverythingElsePercentage}`}</Text>
           {/* Add more Text components for other properties if needed */}
         </View>
-      )}
-    </ScrollView>
+      )}</ScrollView>
+    </View>
   );
 }
 

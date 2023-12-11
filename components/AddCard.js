@@ -1,15 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Button, Alert } from 'react-native';
+ import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Button, Alert, TouchableOpacity, Dimensions } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { ref, get } from 'firebase/database';
 import { database, db } from '../firebaseConfig'; // Import your Realtime Firebase configuration
 import { collection, doc, setDoc } from 'firebase/firestore'; // Import Firestore methods
 
-export default function AddCard({ route }) {
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
+
+export default function AddCard({ route, navigation }) {
   const { issuer } = route.params;
   const userUID = route.params.userUID;
 
   const [cards, setCards] = useState([]);
   const [selectedCardKeys, setSelectedCardKeys] = useState([]);
+
+  const backFunction = () => {
+    navigation.navigate("Wallet");
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +89,11 @@ export default function AddCard({ route }) {
 
   return (
     <View style={styles.container}>
+        <TouchableOpacity onPress={backFunction}>
+          <View style={styles.backButton}>
+            <Text style={styles.buttonStyle}>Back</Text>
+          </View>
+        </TouchableOpacity>
       <Text style={styles.title}>Add Cards</Text>
       <ScrollView style={styles.cardList}>
         {cards.map((card) => (
@@ -103,6 +116,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
+  },
+  backButton:{
+    marginTop: 30,
+    width: deviceWidth/4,
+    height: deviceHeight/20,
+    backgroundColor: "red",
+  },
+  buttonStyle: {
+    fontSize: 20,
+    textAlign: "center",
+    paddingTop: 5,
   },
   title: {
     fontSize: 24,

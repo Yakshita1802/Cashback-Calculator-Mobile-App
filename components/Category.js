@@ -6,14 +6,15 @@ import { database } from '../firebaseConfig';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
-
+/*I placed everything inside the parent view because Flatlist causes problems to the app and navigation function*/
+/*Navigation function takes user to Login page but not to wallet page; userID not found..,*/
 export default function Category({ route, navigation }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [maxPercentageCards, setMaxPercentageCards] = useState([]);
 
   const backFunction = () => {
-    navigation.navigate("Wallet");
+    navigation.navigate("Login");
   }
 
   useEffect(() => {
@@ -61,8 +62,14 @@ export default function Category({ route, navigation }) {
   };
 
   return (
+    <View style={styles.container}>
+        <TouchableOpacity onPress={backFunction}>
+          <View style={styles.backButton}>
+            <Text style={styles.buttonStyle}>Back</Text>
+          </View>
+        </TouchableOpacity>
     <FlatList
-      style={styles.container}
+      style={styles.flatList}
       ListHeaderComponent={
         <Text style={styles.title}>Categories</Text>
       }
@@ -92,6 +99,7 @@ export default function Category({ route, navigation }) {
         )
       }
     />
+    </View>
   );
 }
 
