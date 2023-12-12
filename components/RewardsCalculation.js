@@ -19,9 +19,30 @@ export default function RewardsCalculation({ route }) {
 
   const handleSaveReward = async () => {
     try {
-      // ... (Your existing code remains the same)
+      const firestore = getFirestore();
+      const userRef = doc(firestore, 'users', userUID);
+      const userSnapshot = await getDoc(userRef);
 
-      // Rest of your function remains unchanged
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        const userWalletRef = collection(userRef, 'Wallet'); // Reference to the 'Wallet' subcollection
+        const userWalletDoc = doc(userWalletRef, userUID); // Reference to the user's wallet document
+
+        // Reference to the 'saveReward' subcollection within the user's wallet document
+        const userSaveRewardRef = collection(userWalletDoc, 'saveReward');
+
+        // Add a new document with an auto-generated ID to the 'saveReward' sub-collection
+        const newRewardDocumentRef = await addDoc(userSaveRewardRef, { rewardBalance: parseFloat(reward || 0) });
+
+        // Update the reward balance in the user's data
+        const updatedReward = parseFloat(userData.reward || 0) + parseFloat(reward || 0);
+        await updateDoc(userRef, { reward: updatedReward });
+
+        Alert.alert('Success', 'Reward saved successfully!');
+      } else {
+        console.error('User data does not exist.');
+        Alert.alert('Error', 'User data does not exist.');
+      }
     } catch (error) {
       console.error('Error saving reward:', error);
       Alert.alert('Error', 'Failed to save reward.');
@@ -58,7 +79,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
-    backgroundColor: '#fff', // Background color
   },
   title: {
     fontSize: 24,
@@ -72,12 +92,13 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     marginBottom: 10,
     paddingHorizontal: 10,
-    borderRadius: 8, // Rounded corners for input fields
   },
   rewardText: {
     fontSize: 18,
     marginTop: 20,
   },
+  savedRewardsText: {
+    fontSize: 18,
+    marginTop: 20,
+  },
 });
-
-

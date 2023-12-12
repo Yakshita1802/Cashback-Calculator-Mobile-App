@@ -72,10 +72,10 @@ export default function CardDetails({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
     marginVertical: 10,
     textAlign: 'center',
