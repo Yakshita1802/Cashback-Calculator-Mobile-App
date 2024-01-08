@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail, getAuth } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,16 +9,15 @@ export default function LoginScreen({ route }) {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
+  // Initialize Firestore collection reference
+  const usersCollection = collection(getFirestore(), 'users'); // Replace 'users' with your actual collection name
+
   const handleLogin = async () => {
     try {
       const auth = getAuth();
       const emailToLowerCase = email.toLowerCase();
       await signInWithEmailAndPassword(auth, emailToLowerCase, password);
 
-      const db = getFirestore();
-      const usersCollection = collection(db, 'users');
-
-      // Retrieve the user document based on the logged-in user's UID
       const userCredential = auth.currentUser;
       const userUID = userCredential.uid;
 
@@ -83,7 +82,23 @@ export default function LoginScreen({ route }) {
         console.log('Saved rewards:', userData.reward || 0);
       }
     } catch (error) {
-      console.error('Error fetching saved rewards:', error);
+      console.error(error.message);
+      Alert.alert('Error', 'An error occurred during login.');
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      const auth = getAuth();
+      const emailToLowerCase = email.toLowerCase();
+
+      // Send password reset email
+      await sendPasswordResetEmail(auth, emailToLowerCase);
+
+      Alert.alert('Password Reset Email Sent', 'Please check your email for further instructions.');
+    } catch (error) {
+      console.error('Error sending password reset email:', error.message);
+      Alert.alert('Error', 'Failed to send password reset email. Please try again.');
     }
   };
 
@@ -107,6 +122,13 @@ export default function LoginScreen({ route }) {
         <View style={styles.buttonContainer}>
           <Button title="Login" onPress={handleLogin} color="white" />
         </View>
+        <View style={styles.forgotPasswordContainer}>
+          <Button
+            title="Forgot Password?"
+            onPress={handleForgotPassword}
+            color="blue"
+          />
+        </View>
       </View>
     </View>
   );
@@ -117,7 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightgray',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -137,9 +159,17 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: 200,
     height: 50,
-    backgroundColor: 'green',
+    backgroundColor: '#6A0572',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    marginBottom: 10,
+  },
+  forgotPasswordContainer: {
+    width: 200,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
 });
