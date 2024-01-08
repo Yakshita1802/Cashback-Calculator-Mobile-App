@@ -68,7 +68,6 @@ export default function CardDetails({ route }) {
               <Text style={styles.detailsLabel}>Everything Else:</Text>
               <Text>{`${cardDetails.EverythingElsePercentage}%`}</Text>
             </View>
-            {/* Add more details rows for other properties if needed */}
           </View>
         </View>
       )}
