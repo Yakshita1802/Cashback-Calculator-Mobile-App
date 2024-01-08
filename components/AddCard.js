@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database, db } from '../firebaseConfig'; // Import your Realtime Firebase configuration
 import { collection, doc, setDoc } from 'firebase/firestore'; // Import Firestore methods
@@ -15,7 +15,7 @@ export default function AddCard({ route }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cardDataRef = ref(database, 'cards'); // Use Realtime Firebase reference
+        const cardDataRef = ref(database, 'cards');
         const dataSnapshot = await get(cardDataRef);
 
         if (dataSnapshot.exists()) {
@@ -97,17 +97,21 @@ export default function AddCard({ route }) {
       />
       <ScrollView style={styles.cardList}>
         {filteredCards.map((card) => (
-          <View key={card.key} style={styles.cardContainer}>
+          <TouchableOpacity
+            key={card.key}
+            style={styles.cardContainer}
+            onPress={() => handleToggleCardSelection(card.key)}
+          >
             <View style={styles.cardInfo}>
+              <Image
+                source={{ uri: card.imageUrl }}
+                style={styles.cardImage}
+              />
               <Text style={styles.cardText}>{card['CardName']}</Text>
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => handleToggleCardSelection(card.key)}
-              >
-                <Text style={styles.addButtonText}>Add</Text>
-              </TouchableOpacity>
+              <Text style={styles.cardText}>{card['Issuer']}</Text>
+              {/* Add more details as needed */}
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
       <TouchableOpacity style={styles.addToWalletButton} onPress={handleAddToWallet}>
@@ -132,6 +136,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   cardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
     padding: 10,
     backgroundColor: '#F3F3F3',
@@ -139,21 +146,17 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    flex: 1,
   },
   cardText: {
     fontSize: 18,
+    marginRight: 10, // Add margin between the text and image
   },
-  addButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  cardImage: {
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
   },
   addToWalletButton: {
     backgroundColor: '#34C759',

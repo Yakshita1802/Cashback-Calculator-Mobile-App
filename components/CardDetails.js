@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 
@@ -35,6 +35,13 @@ export default function CardDetails({ route }) {
             <Text style={styles.cardName}>{`Card Name: ${cardDetails.CardName}`}</Text>
             <Text>{`Issuer: ${cardDetails.Issuer}`}</Text>
           </View>
+          {cardDetails.imageUrl && (
+            <Image
+              source={{ uri: cardDetails.imageUrl }}
+              style={styles.cardImage}
+              resizeMode="contain"
+            />
+          )}
           <View style={styles.detailsSection}>
             <Text style={styles.detailsTitle}>Rewards</Text>
             <View style={styles.detailsRow}>
@@ -72,7 +79,7 @@ export default function CardDetails({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 30,
   },
   title: {
     fontSize: 30,
@@ -113,5 +120,10 @@ const styles = StyleSheet.create({
   },
   detailsLabel: {
     fontWeight: 'bold',
+  },
+  cardImage: {
+    width: '100%',
+    height: 200, // Adjust the height as needed
+    marginBottom: 10,
   },
 });
