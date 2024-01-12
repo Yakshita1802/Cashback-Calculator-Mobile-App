@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, initializeAuth, inMemoryPersistence } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getDatabase } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore'; 
+import { getDatabase } from 'firebase/database'; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyD3aAVj4wNy2AljX52lC_-LbvqfTMIpML8",
@@ -20,7 +20,7 @@ const auth = initializeAuth(app, {
   dataConverter: null,
 });
 
-const db = getFirestore(app);
-const database = getDatabase(app);
+const db = getFirestore(app); 
+const database = getDatabase(app); 
 
 export { auth, db, database }; // Export the db variable

@@ -4,9 +4,9 @@ import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 
 export default function Category({ navigation }) {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [maxPercentageCards, setMaxPercentageCards] = useState([]);
+  const [categories, setCategories] = useState([]); 
+  const [selectedCategory, setSelectedCategory] = useState(null); 
+  const [maxPercentageCards, setMaxPercentageCards] = useState([]); 
 
   useEffect(() => {
     const fetchCardDetails = async () => {
