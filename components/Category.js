@@ -2,17 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
+import { db } from "../firebaseConfig";
+import { getWallet, collection } from 'firebase/firestore';
+
 
 export default function Category({ navigation }) {
   const [categories, setCategories] = useState([]); 
   const [selectedCategory, setSelectedCategory] = useState(null); 
-  const [maxPercentageCards, setMaxPercentageCards] = useState([]); 
+  const [maxPercentageCards, setMaxPercentageCards] = useState([]);
+  const [usersCards, setUsersCards] = useState([]); 
+  const usersCardCollectionRef = collection(db, "wallet");
 
   useEffect(() => {
     const fetchCardDetails = async () => {
       try {
-        const cardsRef = ref(database, 'cards');
-        const cardsSnapshot = await get(cardsRef);
+        /*const cardsRef = ref(database, 'cards');
+        const cardsSnapshot = await get(cardsRef);*/
+
+        const data = await getWallet(usersCardCollectionRef);
 
         if (cardsSnapshot.exists()) {
           const cardsData = cardsSnapshot.val();
