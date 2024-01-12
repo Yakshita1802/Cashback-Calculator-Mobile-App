@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList } from '
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 import { db } from "../firebaseConfig"; /*importing Cloud Firestore*/
-import { getUsers, collection } from 'firebase/firestore'; /*importing collection and function from Firestore*/
+import { getWallet, collection } from 'firebase/firestore'; /*importing collection and function from Firestore*/
 
 /*import users collection with userID document containing wallet collection that stores all card documents*/
 
@@ -11,17 +11,20 @@ export default function Category({ navigation }) {
   const [categories, setCategories] = useState([]); /*array of purchase categories*/
   const [selectedCategory, setSelectedCategory] = useState(null); /*selected category object*/
   const [maxPercentageCards, setMaxPercentageCards] = useState([]); /*array of max percentages*/
-  const [usersList, setUsersList] = useState([]);  /*array of users*/
-  const usersCollectionRef = collection(db, "users"); /*reference to users collection*/
+
+  const [walletList, setWalletList] = useState([]);  /*wallet array with all the cards*/
+  const walletCollectionRef = collection(db, "Wallet"); /*reference to wallet collection*/
 
   useEffect(() => {
     const fetchCardDetails = async () => {
       try {
-        /*const cardsRef = ref(database, 'cards');
-        const cardsSnapshot = await get(cardsRef);*/
+        const cardsRef = ref(database, 'cards');
+        const cardsSnapshot = await get(cardsRef);
 
-        const data = await getUsers(usersCollectionRef);
-
+        const walletData = await getWallet(walletCollectionRef);
+        const filteredData = walletData.cards.map((card) => ({
+          id: card.id
+        }));
         if (cardsSnapshot.exists()) {
           const cardsData = cardsSnapshot.val();
           const uniqueCategories = Object.keys(cardsData[Object.keys(cardsData)[0]])
@@ -42,6 +45,8 @@ export default function Category({ navigation }) {
     setSelectedCategory(category);
     const cardsRef = ref(database, 'cards');
     get(cardsRef).then((cardsSnapshot) => {
+
+      //write if statement that test if card in database is also in wallet list, then do the following
       if (cardsSnapshot.exists()) {
         const cardsData = cardsSnapshot.val();
         const sortedCards = Object.values(cardsData)
