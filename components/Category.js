@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList } from '
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 import { db } from "../firebaseConfig"; /*importing Cloud Firestore*/
-import { getWallet, collection } from 'firebase/firestore'; /*importing collection and function from Firestore*/
+import { getDocs, collection } from 'firebase/firestore'; /*importing collection and function from Firestore*/
 
 /*import users collection with userID document containing wallet collection that stores all card documents*/
 
@@ -21,10 +21,12 @@ export default function Category({ navigation }) {
         const cardsRef = ref(database, 'cards');
         const cardsSnapshot = await get(cardsRef);
 
-        const walletData = await getWallet(walletCollectionRef);
-        const filteredData = walletData.cards.map((card) => ({
-          id: card.id
+        const walletData = await getDocs(walletCollectionRef);
+        const filteredData = walletData.docs.map((doc) => ({
+          id: doc.id
         }));
+        setWalletList(filteredData);
+
         if (cardsSnapshot.exists()) {
           const cardsData = cardsSnapshot.val();
           const uniqueCategories = Object.keys(cardsData[Object.keys(cardsData)[0]])
@@ -45,8 +47,8 @@ export default function Category({ navigation }) {
     setSelectedCategory(category);
     const cardsRef = ref(database, 'cards');
     get(cardsRef).then((cardsSnapshot) => {
-
-      //write if statement that test if card in database is also in wallet list, then do the following
+      const userCards = Object.keys(walletList)
+              .map(id => walletList[id].CardName);
       if (cardsSnapshot.exists()) {
         const cardsData = cardsSnapshot.val();
         const sortedCards = Object.values(cardsData)
