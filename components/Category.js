@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
-import { db } from "../firebaseConfig";
-import { getWallet, collection } from 'firebase/firestore';
+import { db } from "../firebaseConfig"; /*importing Cloud Firestore*/
+import { getUsers, collection } from 'firebase/firestore'; /*importing collection and function from Firestore*/
 
+/*import users collection with userID document containing wallet collection that stores all card documents*/
 
 export default function Category({ navigation }) {
-  const [categories, setCategories] = useState([]); 
-  const [selectedCategory, setSelectedCategory] = useState(null); 
-  const [maxPercentageCards, setMaxPercentageCards] = useState([]);
-  const [usersCards, setUsersCards] = useState([]); 
-  const usersCardCollectionRef = collection(db, "wallet");
+  const [categories, setCategories] = useState([]); /*array of purchase categories*/
+  const [selectedCategory, setSelectedCategory] = useState(null); /*selected category object*/
+  const [maxPercentageCards, setMaxPercentageCards] = useState([]); /*array of max percentages*/
+  const [usersList, setUsersList] = useState([]);  /*array of users*/
+  const usersCollectionRef = collection(db, "users"); /*reference to users collection*/
 
   useEffect(() => {
     const fetchCardDetails = async () => {
@@ -19,7 +20,7 @@ export default function Category({ navigation }) {
         /*const cardsRef = ref(database, 'cards');
         const cardsSnapshot = await get(cardsRef);*/
 
-        const data = await getWallet(usersCardCollectionRef);
+        const data = await getUsers(usersCollectionRef);
 
         if (cardsSnapshot.exists()) {
           const cardsData = cardsSnapshot.val();
