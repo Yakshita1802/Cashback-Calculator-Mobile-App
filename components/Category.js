@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View, TouchableOpacity, FlatList } from '
 import { ref, get } from 'firebase/database';
 import { database } from '../firebaseConfig';
 import { db } from "../firebaseConfig"; /*importing Cloud Firestore*/
-import { getDocs, collection } from 'firebase/firestore'; /*importing collection and function from Firestore*/
+import { getDocs, collection } from 'firebase/firestore'; /*importing collection and Doc function from Firestore*/
 
 /*import users collection with userID document containing wallet collection that stores all card documents*/
 
@@ -26,12 +26,14 @@ export default function Category({ navigation }) {
           id: doc.id
         }));
         setWalletList(filteredData);
-
+        //if id in cardsRef is the same as id in walletList, then...
         if (cardsSnapshot.exists()) {
+
           const cardsData = cardsSnapshot.val();
           const uniqueCategories = Object.keys(cardsData[Object.keys(cardsData)[0]])
-            .filter(key => key !== 'CardName' && key !== 'Issuer' && key !== 'Network' && key !== 'id');
+            .filter(key => key !== 'CardName' && key !== 'Issuer' && key !== 'Network' && key !== 'id' && key !== walletList.id);
           setCategories(uniqueCategories);
+
         } else {
           console.log('No cards found in Realtime Database');
         }
@@ -83,12 +85,11 @@ export default function Category({ navigation }) {
           <Text style={styles.title}>Max Percentage Cards for {selectedCategory}</Text>
           <FlatList
             data={maxPercentageCards}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id} /*Change parameters to reflect cards inside users wallet*/
             renderItem={({ item }) => (
               <View style={styles.cardContainer}>
                 <Text style={styles.cardName}>{item.CardName}</Text>
                 <Text>{`${selectedCategory} Percentage: ${item[selectedCategory]}`}</Text>
-                {/* Display other card details if needed */}
               </View>
             )}
           />
