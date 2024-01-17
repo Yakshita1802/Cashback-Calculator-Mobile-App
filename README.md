@@ -57,5 +57,8 @@ Run the Application:
 
 npm start
 
+The **WelcomeScreen** component is a React Native page with a background image and stylized elements, providing a welcoming interface for a cashback calculator app. It includes a title, subtitle, description, and buttons for user login and signup, all styled for an engaging and intuitive user experience.
+
+
 
 
